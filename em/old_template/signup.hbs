@@ -1,0 +1,10 @@
+<h5>Sign Up</h5>
+{{#if msgProp.msg}}
+	{{msgProp.msg}}
+{{/if}}
+{{input label='Name' type="text"  value=model.name validate=true}}
+{{input label='Email' type="email" value=model.email validate=true}}
+{{input label='Password' type="password" value=model.password validate=true}}
+{{input label='Password Confirmation' 
+	type="password" value=model.passwordConfirmation validate=true}}
+<button {{action 'signup'}}>Sign Up</button>

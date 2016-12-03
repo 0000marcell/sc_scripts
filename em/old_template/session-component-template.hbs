@@ -1,0 +1,8 @@
+{{#if authManager.isAuthenticated}}
+	{{#link-to 'users.user' authManager.data.authenticated.user.id}}{{authManager.data.authenticated.user.email}}{{/link-to}}
+	{{#link-to 'users'}}Users{{/link-to}}
+	<a {{action 'logOut'}}>Log Out</a>
+{{else}}
+	{{#link-to 'login' }}Login{{/link-to}}
+	{{#link-to 'signup' }}Sign Up{{/link-to}}
+{{/if}}

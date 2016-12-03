@@ -1,0 +1,8 @@
+<h5>Login</h5>
+{{#if msgProp.msg}}
+	{{msgProp.msg}}
+{{/if}}
+{{input label='Email' type="email" validate=true value=email}}
+{{input label='Password' type="password" validate=true value=password}}
+<button {{action 'login'}}>Login</button>
+{{#link-to 'password-reset' }}Forgot Password?{{/link-to}}

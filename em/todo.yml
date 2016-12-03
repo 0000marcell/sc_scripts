@@ -1,0 +1,37 @@
+implement the basic front-end login logout logic based on $ghp/ember-test
+  being implemented on em.rb generate login
+  need to install the dependencies and configure both
+    ember-cli-mirage
+    ember-simple-auth
+make login, signup logic based on the new sandbox/javascript/ember/ember-rails
+create password-reset route and logic when creating the login logic
+ignore materialize, create a default login, logout etc.. without
+  caring about views and appearence
+implement destroy login
+testing implemented login logic
+bug when installing materialize, ruby eats the output of materialize
+  learn how to avoid this, maybe using pop3
+implement ember mirage to suport login logic 
+  install mirage
+  create configuration for signup login new users etc...
+try to implement the login logic using component and routes only
+  implement the component using default materialize stuff
+  the component must be a black box, actions are passed down
+  to the component, and handled in the route.
+create sepate session component and upload to npm, and
+just intalled it in new version of the program
+create landing page using materialize
+  wait for the docs or read the component and workout how to use v1
+implement deploy to s3
+transform program to desktop version
+transform program to mobile version
+
+done:
+first create a defalt ember app with all the dependencies:
+creating new login logic on ember-test
+implement login logic
+need to install esa
+install v1 materialize  with em materialize
+copy installed node and bower instead of having to download again
+change specific information on ember-cli-build and package.json
+create a default ember program 
