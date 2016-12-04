@@ -85,6 +85,28 @@ command "generate login" do
 		puts 'copying adapters'
 		copy "#{TEMP}/applicaion-adapter.js",
 				 "./app/adapters/application.js"
+
+		#dependencies
+		puts 'installing dependencies'
+		puts `ember install ember-simple-auth`
+		mkdir './app/authenticators'
+		copy "#{TEMP}/authenticator-oauth2.js",
+				 "./app/authenticators/oauth2.js"
+		mkdir './app/authorizers/'
+		copy "#{TEMP}/authorizer-oauth2.js",
+				 "./app/authorizers/oauth2.js"			
+
+		puts `ember install ember-cli-mirage`
+		puts `ember g mirage-factory user`
+		puts `ember g mirage-model user`
+		copy "#{TEMP}/mirage-factory-user.js",
+				 "./mirage/factories/user.js"	
+		copy "#{TEMP}/mirage-models-user.js",
+				 "./mirage/models/user.js"
+		copy "#{TEMP}/mirage-scenarios-default.js",
+				 "./mirage/scenarios/default.js"
+		copy "#{TEMP}/mirage-config.js",
+				 "./mirage/config.js"
 	end
 end
 
