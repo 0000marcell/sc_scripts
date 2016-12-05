@@ -70,18 +70,18 @@ command "generate login" do
 
 		#Model
 		puts 'generating models'
-		`ember g model user name:string email:string username:string password:string`
+		puts `ember g model user name:string email:string username:string password:string`
 
 		#Services
 		puts 'generating services'
-		`ember g service session`
+		puts `ember g service session`
 		puts 'copying services'
 		copy "#{TEMP}/service-session.js",
 				 "./app/services/session.js"
 
 		#Adapters
 		puts 'generating adapters'
-		`ember g adater application`
+		puts `ember g adapter application`
 		puts 'copying adapters'
 		copy "#{TEMP}/applicaion-adapter.js",
 				 "./app/adapters/application.js"
