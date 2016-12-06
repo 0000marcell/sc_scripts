@@ -41,9 +41,9 @@ command "generate login" do
 		puts 'generate login'
 		#Routes
 		puts 'generating routes'
-		`ember g route home/login`
-		`ember g route home/signup`
-		`ember g route users/user`
+		puts `ember g route home/login`
+		puts `ember g route home/signup`
+		puts `ember g route users/user`
 		puts 'copying routes'
 		copy "#{TEMP}/login.js",
 				 "./app/routes/home/login.js"
@@ -56,8 +56,8 @@ command "generate login" do
 
 		#Components
 		puts 'generating components'
-		`ember g component abstract-form`
-		`ember g component session-component`
+		puts `ember g component abstract-form`
+		puts `ember g component session-component`
 		puts 'copying components'
 		copy "#{TEMP}/abstract-form.js",
 				 "./app/components/abstract-form.js"
@@ -83,7 +83,7 @@ command "generate login" do
 		puts 'generating adapters'
 		puts `ember g adapter application`
 		puts 'copying adapters'
-		copy "#{TEMP}/applicaion-adapter.js",
+		copy "#{TEMP}/application-adapter.js",
 				 "./app/adapters/application.js"
 
 		#dependencies
@@ -111,16 +111,40 @@ command "generate login" do
 end
 
 command "destroy login" do
-	syntax 'em generate login'
+	syntax 'em destroy login'
 	description 'destroys login page and logic'
 	action do |args, options|
 		puts 'destroy login'
-		puts `ember d route login`
-		puts `ember d route signup`
+		#Routes
+		puts 'destroying routes'
+		puts `ember d route home/login`
+		puts `ember d route home/signup`
 		puts `ember d route users/user`
-		puts `ember d controller login`
-		puts `ember d controller signup`
+
+		#Components
+		puts 'destroying components'
+		puts `ember d component abstract-form`
 		puts `ember d component session-component`
+
+		#Model
+		puts 'destroying models'
+		puts `ember d model user`
+
+		#Services
+		puts 'destroying services'
+		puts `ember d service session`
+
+		#Adapters
+		puts 'destroying adapters'
+		puts `ember d adapter application`
+
+		#dependencies
+		puts 'removing dependencies'
 		puts `npm uninstall --save-dev ember-simple-auth`
+		rm_dir './app/authenticators'
+		rm_dir './app/authorizers/'
+		
+		puts `npm uninstall --save-dev ember-cli-mirage`
+		rm_dir './mirage'
 	end
 end
