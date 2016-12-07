@@ -62,11 +62,11 @@ command "generate login" do
 		copy "#{TEMP}/abstract-form.js",
 				 "./app/components/abstract-form.js"
 		copy "#{TEMP}/abstract-form.hbs",
-				 "./app/templates/components/abstract-form.js"
+				 "./app/templates/components/abstract-form.hbs"
 		copy "#{TEMP}/session-component.js",
 				 "./app/components/session-component.js"
 		copy "#{TEMP}/session-component.hbs",
-				 "./app/templates/components/session-component.js"
+				 "./app/templates/components/session-component.hbs"
 
 		#Model
 		puts 'generating models'
@@ -99,6 +99,7 @@ command "generate login" do
 		puts `ember install ember-cli-mirage`
 		puts `ember g mirage-factory user`
 		puts `ember g mirage-model user`
+		puts 'copying mirage files...'
 		copy "#{TEMP}/mirage-factory-user.js",
 				 "./mirage/factories/user.js"	
 		copy "#{TEMP}/mirage-models-user.js",
@@ -107,6 +108,8 @@ command "generate login" do
 				 "./mirage/scenarios/default.js"
 		copy "#{TEMP}/mirage-config.js",
 				 "./mirage/config.js"
+
+		puts `ember install ember-route-action-helper`
 	end
 end
 
@@ -146,5 +149,7 @@ command "destroy login" do
 		
 		puts `npm uninstall --save-dev ember-cli-mirage`
 		rm_dir './mirage'
+
+		puts `npm uninstall --save-dev ember-route-action-helper`
 	end
 end
