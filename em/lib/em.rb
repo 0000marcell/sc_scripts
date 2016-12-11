@@ -1,4 +1,5 @@
 # REF: 0
+require 'json'
 require 'rainbow'
 require 'em/version'
 require 'byebug'
@@ -39,6 +40,9 @@ command "generate login" do
   description 'generates login page and logic'
   action do |args, options|
     puts 'generate login'
+    puts 'getting project name'
+    file = File.read('./package.json')
+    @app_name = JSON.parse(file)['name']
     #Routes
     puts 'generating routes'
     puts `ember g route home/login`
@@ -83,14 +87,14 @@ command "generate login" do
     puts 'generating adapters'
     puts `ember g adapter application`
     puts 'copying adapters'
-    copy "#{TEMP}/application-adapter.js",
+    template "#{TEMP}/application-adapter.erb",
          "./app/adapters/application.js"
 
     #dependencies
     puts 'installing dependencies'
     puts `ember install ember-simple-auth`
     mkdir './app/authenticators'
-    copy "#{TEMP}/authenticator-oauth2.js",
+    template "#{TEMP}/authenticator-oauth2.erb",
          "./app/authenticators/oauth2.js"
     mkdir './app/authorizers/'
     copy "#{TEMP}/authorizer-oauth2.js",

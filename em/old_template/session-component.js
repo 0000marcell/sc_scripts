@@ -1,10 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	authManager: Ember.inject.service('session'),
-	actions: {
-		logOut(){
-			this.get('authManager').invalidate();
-		}
-	}
+  authManager: Ember.inject.service('session'),
+  actions: {
+    logOut(){
+      this.get('authManager').invalidate();
+    }
+  }
 });
