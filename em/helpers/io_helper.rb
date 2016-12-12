@@ -23,7 +23,7 @@ module IO_helper
 		FileUtils.copy_entry(src, dest)
 	end
 
-	def template(src, dest, replace=false)
+	def template(src, dest, binding_context, replace=true)
 		if(File.file?(dest) and !replace)
 			puts "#{dest} already exist!"
 			return 0
@@ -32,7 +32,7 @@ module IO_helper
 		file_contents = template.read
 		template.close
 		renderer = ERB.new(file_contents)
-		result = renderer.result(binding)
+		result = renderer.result(binding_context)
 		output = File.open(dest, 'w+')
 		output.write(result)
 		output.close

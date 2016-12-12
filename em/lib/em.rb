@@ -43,6 +43,7 @@ command "generate login" do
     puts 'getting project name'
     file = File.read('./package.json')
     @app_name = JSON.parse(file)['name']
+    puts "app name is #{@app_name}"
     #Routes
     puts 'generating routes'
     puts `ember g route home/login`
@@ -88,14 +89,14 @@ command "generate login" do
     puts `ember g adapter application`
     puts 'copying adapters'
     template "#{TEMP}/application-adapter.erb",
-         "./app/adapters/application.js"
+         "./app/adapters/application.js", binding
 
     #dependencies
     puts 'installing dependencies'
     puts `ember install ember-simple-auth`
     mkdir './app/authenticators'
     template "#{TEMP}/authenticator-oauth2.erb",
-         "./app/authenticators/oauth2.js"
+         "./app/authenticators/oauth2.js", binding
     mkdir './app/authorizers/'
     copy "#{TEMP}/authorizer-oauth2.js",
          "./app/authorizers/oauth2.js"      
