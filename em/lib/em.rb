@@ -115,6 +115,11 @@ command "generate login" do
          "./mirage/config.js"
 
     puts `ember install ember-route-action-helper`
+
+    # config enviroments
+    puts 'copying config environment'
+    copy "#{TEMP}/enviroment.js",
+         "./config/enviroment.js" 
   end
 end
 

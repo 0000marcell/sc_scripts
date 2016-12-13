@@ -1,0 +1,68 @@
+/* jshint node: true */
+
+module.exports = function(environment) {
+  var ENV = {
+		modulePrefix: 'app4',
+    environment: environment,
+    baseURL: '/',
+		locationType: process.env.EMBER_CLI_ELECTRON ? 'hash' : 'auto',
+		'ember-simple-auth': {
+			authenticationRoute: '/home/login'
+		},
+		'ember-cli-mirage': {
+			enabled: false
+		},
+		APP: {
+			useMirage: false,
+			host: '/',
+			oauth2: '/api/v1/login'
+    }
+  };
+
+  if (environment === 'development') {
+		/* mirage backend */
+		ENV.APP.useMirage = true;
+		ENV.APP.host = '/';
+		ENV.APP.oauth2 = '/api/v1/login';
+		ENV['ember-cli-mirage'].enabled = true;
+
+		/* rails backend
+		ENV.APP.useMirage = false;
+		ENV.APP.host = 'http://0.0.0.0:3000';
+		ENV.APP.oauth2 = 'http://0.0.0.0:3000/api/v1/login';
+		ENV['ember-cli-mirage'].enabled = false;
+    */
+
+		ENV['ember-simple-auth'].baseURL = '/';
+		ENV['ember-simple-auth'].authenticationRoute = '/home/login';
+		ENV.webSocketServer = 'ws://0.0.0.0:3000';
+    // ENV.APP.LOG_RESOLVER = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    //ENV.APP.LOG_TRANSITIONS = true;
+    //ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+  }
+
+  if (environment === 'test') {
+		ENV.APP.useMirage = true;
+		ENV.APP.host = '/';
+		ENV.APP.oauth2 = '/api/v1/login';
+		ENV['ember-cli-mirage'].enabled = true;
+		ENV['ember-simple-auth'].baseURL = '/';
+		ENV.webSocketServer = 'ws://0.0.0.0:3000';
+    // Testem prefers this...
+    ENV.baseURL = '/';
+    ENV.locationType = 'none';
+
+    // keep test console output quieter
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
+
+    ENV.APP.rootElement = '#ember-testing';
+  }
+
+  if (environment === 'production') {
+  }
+
+  return ENV;
+};
