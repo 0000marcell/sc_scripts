@@ -118,8 +118,8 @@ command "generate login" do
 
     # config enviroments
     puts 'copying config environment'
-    copy "#{TEMP}/enviroment.js",
-         "./config/enviroment.js" 
+    template "#{TEMP}/environment.erb",
+         "./config/environment.js", binding 
   end
 end
 
