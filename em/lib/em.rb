@@ -50,6 +50,10 @@ command "generate login" do
     puts `ember g route home/signup`
     puts `ember g route users/user --path ':user_username'`
     puts 'copying routes'
+    copy "#{TEMP}/user.hbs",
+         "./app/templates/users/user.hbs"
+    copy "#{TEMP}/user.js",
+         "./app/routes/users/user.js"
     copy "#{TEMP}/login.js",
          "./app/routes/home/login.js"
     copy "#{TEMP}/login.hbs",
