@@ -25,7 +25,8 @@ export default function() {
 
     http://www.ember-cli-mirage.com/docs/v0.2.x/shorthands/
   */
-	this.post('/oauth/token', (schema, request) => {
+	this.namespace = '/api/v1';
+	this.post('/login', (schema, request) => {
 		let requestBody = request.requestBody,
 				email;
 		if(/username=/.test(requestBody)){
@@ -51,7 +52,6 @@ export default function() {
 				{errors: {title: ['Wrong email/password combination']}});
 		}
 	});
-	this.namespace = '/api/v1';
 	this.post('/users');
 	this.get('/users');
 	this.get('/users/:user_username', (schema, request) => {
