@@ -169,3 +169,25 @@ command "destroy login" do
     puts `npm uninstall --save-dev ember-route-action-helper`
   end
 end
+
+command "install s3 deployment" do
+  syntax 'em deploy s3 <bucket name>'
+  description 'destroys login page and logic'
+  action do |args, options|
+    @bucket_name = args[0]
+    # installing pluggins
+    puts 'installing pluggins'
+    puts 'installing neccessary plugins'
+    puts `ember install ember-cli-deploy`
+    puts `ember install ember-cli-deploy-build`
+    puts `ember install ember-cli-deploy-revision-data`
+    puts `ember install ember-cli-deploy-display-revisions`
+    puts `ember install ember-cli-deploy-gzip`
+    puts `ember install ember-cli-deploy-s3-index`
+    puts `ember install ember-cli-deploy-s3`
+    # coping files
+    puts "coping files deployment bucket: #{@bucket_name}"
+    template "#{TEMP}/deploy.erb",
+         "./config/deploy.js", binding
+  end
+end
