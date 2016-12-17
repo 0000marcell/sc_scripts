@@ -49,6 +49,7 @@ command "generate login" do
     puts `ember g route home/login`
     puts `ember g route home/signup`
     puts `ember g route users/user --path ':user_username'`
+    puts `ember g route index`
     puts 'copying routes'
     copy "#{TEMP}/user.hbs",
          "./app/templates/users/user.hbs"
@@ -62,7 +63,8 @@ command "generate login" do
          "./app/routes/home/signup.js"
     copy "#{TEMP}/signup.hbs",
          "./app/templates/home/signup.hbs"
-
+    copy "#{TEMP}/index.js",
+         "./app/routes/index.js"
     #Components
     puts 'generating components'
     puts `ember g component abstract-form`
