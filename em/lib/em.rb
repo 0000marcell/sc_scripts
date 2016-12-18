@@ -172,7 +172,7 @@ end
 
 command "install s3 deployment" do
   syntax 'em deploy s3 <bucket name>'
-  description 'destroys login page and logic'
+  description 'install tooling for s3 deployment'
   action do |args, options|
     @bucket_name = args[0]
     # installing pluggins
@@ -189,5 +189,14 @@ command "install s3 deployment" do
     puts "coping files deployment bucket: #{@bucket_name}"
     template "#{TEMP}/deploy.erb",
          "./config/deploy.js", binding
+  end
+end
+
+command "deploy s3" do
+  syntax 'em deploy s3'
+  description 'deploy current project to s3 bucket'
+  action do |args, options|
+    puts 'deploying to s3, make sure you have commited your changes!'
+    puts `ember deploy production --verbose --activate=true`
   end
 end
