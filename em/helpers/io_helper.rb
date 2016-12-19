@@ -1,3 +1,4 @@
+require 'colorize'
 require 'erb'
 
 module IO_helper
@@ -9,40 +10,47 @@ module IO_helper
 
 	def mkdir(dest)
 		if(File.directory?(dest))
-			puts "#{dest} already exist!"
+			puts "mkdir ERROR: #{dest} already exist!".colorize(:red)
 			return 0
 		end
+    puts "Creating folder #{dest}".colorize(:blue)
 		FileUtils.mkdir(dest)
 	end
 
 	def copy(src, dest)
+    puts "Copying from #{src} to #{dest}".colorize(:green)
 		FileUtils.cp(src, dest)
 	end
 
 	def copy_dir(src, dest)
+    puts "Copying from #{src} to #{dest}".colorize(:green)
 		FileUtils.copy_entry(src, dest)
 	end
 
-	def template(src, dest, binding_context, replace=true)
+	def template(src, dest, replace=false)
 		if(File.file?(dest) and !replace)
-			puts "#{dest} already exist!"
+			puts "template ERROR: #{dest} already exist!".colorize(:red)
 			return 0
 		end
+    puts "template from #{src} to #{dest} replace: #{replace}".colorize(:yellow)
 		template = File.open(src, 'r')
 		file_contents = template.read
 		template.close
 		renderer = ERB.new(file_contents)
-		result = renderer.result(binding_context)
+		result = renderer.result(binding)
 		output = File.open(dest, 'w+')
 		output.write(result)
 		output.close
 	end
 
 	def rm_file(path)
+    puts "rm file #{path}".colorize(:light_red)
 		FileUtils.remove_file path
 	end
 
+	# remove folder recursively 
 	def rm_dir(path)
+    puts "rm dir #{path}".colorize(:light_red)
 		FileUtils.rm_rf path 
 	end
 
@@ -53,6 +61,7 @@ module IO_helper
 	end
 
 	def write_start(string, path)
+    puts "Trying to write at the start #{string[0...8]} ... on the file #{path}".colorize(:magenta)
 		lines = []
 		File.open(path, 'r'){|f| lines = f.readlines }
 		lines.unshift("#{string}\n")
@@ -60,6 +69,7 @@ module IO_helper
 	end
 	
 	def write_end(string, path)
+    puts "Trying to write at the end #{string[0...8]} ... on the file #{path}".colorize(:magenta)
 		lines = []
 		File.open(path, 'r'){|f| lines = f.readlines }
 		lines << "#{string}\n"
@@ -67,6 +77,7 @@ module IO_helper
 	end
 
 	def write_after(id, string, path)
+    puts "Trying to write after #{id} the string #{string[0...8]} ... on the file #{path}".colorize(:magenta)
 		lines = []
 		File.open(path, 'r'){|f| lines = f.readlines }
 		new_lines = lines.inject([]) do |result, value|
@@ -81,6 +92,7 @@ module IO_helper
 	end
 
 	def rm_string(string, path)
+    puts "Removing #{string[0...8]} from #{path}".colorize(:light_red)
 		regexp = Regexp.new string
 		lines = []
 		File.open(path, 'r'){|f| lines = f.readlines }
@@ -89,6 +101,7 @@ module IO_helper
 	end
 
 	def rm_block(start_id, end_id, path)
+    puts "Removing string block from #{start_id} to #{end_id} #{path}".colorize(:light_red)
 		start_regexp = Regexp.new start_id
 		end_regexp = Regexp.new end_id
 		lines, new_lines, result = [], [], true
