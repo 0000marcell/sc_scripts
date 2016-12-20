@@ -1,0 +1,18 @@
+{{#if loading}}
+	<p>Loading</p>
+{{else}}	
+	{{#if errors}}
+		<p>Errors: </p>
+		{{#each errors as |error|}}
+				<p>{{error}}</p>
+		{{/each}}
+	{{/if}}
+	{{#if msgs}}
+		<p>Msgs: </p>
+		{{#each msgs as |msg|}}
+			<p>{{msg}}</p>
+		{{/each}}
+	{{/if}}
+	{{yield}}
+	<button {{action 'save'}}>{{text}}</button>
+{{/if}}

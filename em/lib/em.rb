@@ -1,6 +1,5 @@
 # REF: 0
 require 'json'
-require 'rainbow'
 require 'em/version'
 require 'byebug'
 
@@ -17,12 +16,12 @@ command :new do
   action do |args, options|
     # return if is_not_intalled?('ember')
     dir_path = "#{File.expand_path('./')}/#{args[0]}"
-    result = `ember new #{args[0]} --skip-npm --skip-bower --skip-git --directory #{dir_path}`
+    run_cmd "ember new #{args[0]} --skip-npm --skip-bower --skip-git --directory #{dir_path}"
     copy_dir "#{TEMP}/node_modules/",
          "./#{args[0]}/node_modules/"
     copy_dir "#{TEMP}/bower_components/",
          "./#{args[0]}/bower_components/"
-    say Rainbow(result).magenta
+    puts "command finished".colorize(:green)
   end
 end 
 
@@ -30,8 +29,8 @@ command :materialize do
   syntax 'em materialize'
   description 'install ember materialize and creates a lading page'
   action do |args, options|
-    puts `ember install "mike-north/ember-cli-materialize#v1"`
-    puts `ember generate ember-cli-materialize`
+    run_cmd "ember install 'mike-north/ember-cli-materialize#v1'"
+    run_cmd "ember generate ember-cli-materialize"
   end
 end
 
@@ -46,10 +45,10 @@ command "generate login" do
     puts "app name is #{@app_name}"
     #Routes
     puts 'generating routes'
-    puts `ember g route home/login`
-    puts `ember g route home/signup`
-    puts `ember g route users/user --path ':user_username'`
-    puts `ember g route index`
+    run_cmd "ember g route home/login"
+    run_cmd "ember g route home/signup"
+    run_cmd "ember g route users/user --path ':user_username'"
+    run_cmd "ember g route index"
     puts 'copying routes'
     copy "#{TEMP}/user.hbs",
          "./app/templates/users/user.hbs"
@@ -67,9 +66,9 @@ command "generate login" do
          "./app/routes/index.js"
     #Components
     puts 'generating components'
-    puts `ember g component abstract-form`
-    puts `ember g component session-component`
-    puts 'copying components'
+    run_cmd "ember g component abstract-form"
+    run_cmd "ember g component session-component"
+    puts "copying components"
     copy "#{TEMP}/abstract-form.js",
          "./app/components/abstract-form.js"
     copy "#{TEMP}/abstract-form.hbs",
@@ -81,25 +80,25 @@ command "generate login" do
 
     #Model
     puts 'generating models'
-    puts `ember g model user name:string email:string username:string password:string`
+    run_cmd "ember g model user name:string email:string username:string password:string"
 
     #Services
     puts 'generating services'
-    puts `ember g service session`
+    run_cmd "ember g service session"
     puts 'copying services'
     copy "#{TEMP}/service-session.js",
          "./app/services/session.js"
 
     #Adapters
     puts 'generating adapters'
-    puts `ember g adapter application`
+    run_cmd "ember g adapter application"
     puts 'copying adapters'
     template "#{TEMP}/application-adapter.erb",
          "./app/adapters/application.js", binding
 
     #dependencies
     puts 'installing dependencies'
-    puts `ember install ember-simple-auth`
+    run_cmd "ember install ember-simple-auth"
     mkdir './app/authenticators'
     template "#{TEMP}/authenticator-oauth2.erb",
          "./app/authenticators/oauth2.js", binding
@@ -107,9 +106,9 @@ command "generate login" do
     copy "#{TEMP}/authorizer-oauth2.js",
          "./app/authorizers/oauth2.js"      
 
-    puts `ember install ember-cli-mirage`
-    puts `ember g mirage-factory user`
-    puts `ember g mirage-model user`
+    run_cmd "ember install ember-cli-mirage"
+    run_cmd "ember g mirage-factory user"
+    run_cmd "ember g mirage-model user"
     puts 'copying mirage files...'
     copy "#{TEMP}/mirage-factory-user.js",
          "./mirage/factories/user.js" 
@@ -119,13 +118,13 @@ command "generate login" do
          "./mirage/scenarios/default.js"
     copy "#{TEMP}/mirage-config.js",
          "./mirage/config.js"
-
-    puts `ember install ember-route-action-helper`
+    run_cmd "ember install ember-route-action-helper"
 
     # config enviroments
     puts 'copying config environment'
     template "#{TEMP}/environment.erb",
          "./config/environment.js", binding 
+    puts "command finished".colorize(:green)
   end
 end
 
@@ -136,37 +135,37 @@ command "destroy login" do
     puts 'destroy login'
     #Routes
     puts 'destroying routes'
-    puts `ember d route home/login`
-    puts `ember d route home/signup`
-    puts `ember d route users/user`
+    run_cmd "ember d route home/login"
+    run_cmd "ember d route home/signup"
+    run_cmd "ember d route users/user"
 
     #Components
     puts 'destroying components'
-    puts `ember d component abstract-form`
-    puts `ember d component session-component`
+    run_cmd "ember d component abstract-form"
+    run_cmd "ember d component session-component"
 
     #Model
     puts 'destroying models'
-    puts `ember d model user`
+    run_cmd "ember d model user"
 
     #Services
     puts 'destroying services'
-    puts `ember d service session`
+    run_cmd "ember d service session"
 
     #Adapters
     puts 'destroying adapters'
-    puts `ember d adapter application`
+    run_cmd "ember d adapter application"
 
     #dependencies
     puts 'removing dependencies'
-    puts `npm uninstall --save-dev ember-simple-auth`
+    run_cmd "npm uninstall --save-dev ember-simple-auth"
     rm_dir './app/authenticators'
     rm_dir './app/authorizers/'
     
-    puts `npm uninstall --save-dev ember-cli-mirage`
+    run_cmd "npm uninstall --save-dev ember-cli-mirage"
     rm_dir './mirage'
 
-    puts `npm uninstall --save-dev ember-route-action-helper`
+    run_cmd "npm uninstall --save-dev ember-route-action-helper"
   end
 end
 
@@ -178,13 +177,13 @@ command "install s3 deployment" do
     # installing pluggins
     puts 'installing pluggins'
     puts 'installing neccessary plugins'
-    puts `ember install ember-cli-deploy`
-    puts `ember install ember-cli-deploy-build`
-    puts `ember install ember-cli-deploy-revision-data`
-    puts `ember install ember-cli-deploy-display-revisions`
-    puts `ember install ember-cli-deploy-gzip`
-    puts `ember install ember-cli-deploy-s3-index`
-    puts `ember install ember-cli-deploy-s3`
+    run_cmd "ember install ember-cli-deploy"
+    run_cmd "ember install ember-cli-deploy-build"
+    run_cmd "ember install ember-cli-deploy-revision-data"
+    run_cmd "ember install ember-cli-deploy-display-revisions"
+    run_cmd "ember install ember-cli-deploy-gzip"
+    run_cmd "ember install ember-cli-deploy-s3-index"
+    run_cmd "ember install ember-cli-deploy-s3"
     # coping files
     puts "coping files deployment bucket: #{@bucket_name}"
     template "#{TEMP}/deploy.erb",
@@ -197,6 +196,6 @@ command "deploy s3" do
   description 'deploy current project to s3 bucket'
   action do |args, options|
     puts 'deploying to s3, make sure you have commited your changes!'
-    puts `ember deploy production --verbose --activate=true`
+    run_cmd "ember deploy production --verbose --activate=true"
   end
 end
