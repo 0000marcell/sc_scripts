@@ -199,3 +199,12 @@ command "deploy s3" do
     run_cmd "ember deploy production --verbose --activate=true"
   end
 end
+
+command "install electron" do
+  syntax 'em install electron'
+  description 'install and configure electron'
+  action do |args, options|
+    puts 'Installing ember-electron'
+    run_cmd "ember install ember-electron"
+  end
+end
