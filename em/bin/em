@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift "/Users/marcell/Documents/github/sc_scripts/em/lib"
-$LOAD_PATH.unshift "/Users/marcell/Documents/github/sc_scripts/em/helpers"
+$LOAD_PATH.unshift "/Users/marcell/Documents/github/sc_scripts/helpers"
 require 'rubygems'
-require 'simple_commander/import'
+require_relative '../../simple_commander/lib/simple_commander/import'
 require 'io_helper'
 require 'http_helper'
-
 
 require 'em'
