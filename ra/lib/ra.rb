@@ -17,3 +17,11 @@ command :new do
     puts "command finished".colorize(:green)
   end
 end
+
+command "generate login" do
+  syntax 'ra generate login'
+  description 'generates a default rails api program'
+  action do |args, options|
+    puts "generating login funtionality"
+  end
+end
