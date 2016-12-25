@@ -39,5 +39,10 @@ command "generate login" do
     run_cmd "rails g model user"
     copy "#{TEMP}/user_model.rb",
          "./app/models/user.rb"
+
+    # user serializer
+    run_cmd "rails g serializer user name username email" 
+    copy "#{TEMP}/user_serializer.rb",
+         "./app/serializers/user_serializer.rb"
   end
 end
