@@ -44,5 +44,17 @@ command "generate login" do
     run_cmd "rails g serializer user name username email" 
     copy "#{TEMP}/user_serializer.rb",
          "./app/serializers/user_serializer.rb"
+
+    # creating mailer
+    puts "creating application mailer"
+    run_cmd "rails g mailer application"
+    copy "#{TEMP}/application_mailer.rb",
+         "./app/mailers/application_mailer.rb"
+
+    # creating user mailer
+    puts "creating user mailer"
+    run_cmd "rails g mailer api/v1/user"
+    copy "#{TEMP}/user_mailer.rb",
+         "./app/mailers/api/v1/user_mailer.rb"
   end
 end
