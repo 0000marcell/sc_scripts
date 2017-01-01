@@ -13,7 +13,8 @@ command :new do
   description 'generates a default rails api program'
   action do |args, options|
     puts "generating rails program"
-    run_cmd "rails new #{args[0]} --api"
+    run_cmd "rails new #{args[0]} --api --skip-bundle"
+    cd_in args[0]
     write_end "gem 'active_model_serializers', github: 'rails-api/active_model_serializers', tag: 'v0.10.0.rc4'", "./Gemfile"
     run_cmd "bundle"
     puts "command finished".colorize(:green)
