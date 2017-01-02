@@ -27,7 +27,7 @@ command "generate login" do
   action do |args, options|
     puts "generating login funtionality"
     # installing doorkeeper
-    run_cmd "echo ""gem 'doorkeeper'"
+    write_end "gem 'doorkeeper'", "./Gemfile"
     run_cmd "bundle"
     run_cmd "rails g doorkeeper:install"
     copy "#{TEMP}/application_controller.rb",
@@ -57,5 +57,29 @@ command "generate login" do
     run_cmd "rails g mailer api/v1/user"
     copy "#{TEMP}/user_mailer.rb",
          "./app/mailers/api/v1/user_mailer.rb"
+  end
+end
+
+command "destroy login" do
+  syntax 'ra destroy login'
+  description 'removes default rails api program'
+  action do |args, options|
+    # removing doorkeeper
+    rm_string "'doorkeeper'", './Gemfile' 
+    run_cmd "bundle"
+    run_cmd "rails d doorkeeper:install"
+    rm_file "./app/controllers/application_controller.rb" 
+    copy "#{TEMP}/default_application_controller.rb",
+         "./app/controllers/application_controller.rb"
+    # removing session controller
+    run_cmd "rails d controller api/v1/sessions"
+    # removing user model
+    run_cmd "rails d model user"
+    # removing user serializer
+    run_cmd "rails d serializer user name username email" 
+    # removing mailer
+    run_cmd "rails d mailer application"
+    # removing user mailer
+    run_cmd "rails d mailer api/v1/user"
   end
 end
