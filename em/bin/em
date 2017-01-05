@@ -5,5 +5,6 @@ require 'rubygems'
 require_relative '../../simple_commander/lib/simple_commander/import'
 require 'io_helper'
 require 'http_helper'
+require 'str_helper'
 
 require 'em'

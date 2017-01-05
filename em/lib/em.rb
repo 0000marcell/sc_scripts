@@ -6,7 +6,7 @@ require 'byebug'
 program :name, 'em'
 program :version, Em::VERSION
 program :description, 'generator for ember'
-helpers 'IO'
+helpers 'IO', 'STR'
 
 TEMP = File.dirname(__FILE__) + '/../templates'
 
@@ -206,5 +206,34 @@ command "install electron" do
   action do |args, options|
     puts 'Installing ember-electron'
     run_cmd "ember install ember-electron"
+  end
+end
+
+command "generate model" do
+  syntax 'ex: em g model user name:string todos:has-many:todo'
+  description 'create ember model and mirage model and factory'
+  action do |args, options|
+    model_name = args[0]
+    puts "generating model-mirage #{model_name}"
+    run_cmd "ember g model #{args.join(" ")}"
+    puts "generate mirage model".colorize(:green)
+    copy "#{TEMP}/mirage-model.js",
+         "./mirage/models/#{model_name}.js"
+    if args.grep /has-many/ or args.grep /belongs-to/
+      args.each do |arg|
+        if arg =~ /has-many/ or arg =~ /belongs-to/ 
+          string = arg.split(':')
+          @prop = string[0]
+          @relationship = camelize(string[1])
+          @model = string[2]
+          if !in_file? @relationship, "./mirage/models/#{model_name}.js"
+            write_in ["Model", "import"], ", #{@relationship}", 
+              "./mirage/models/#{model_name}.js"
+          end
+          write_after ".extend({", "\t#{@prop}: #{@relationship}(#{@model})",
+            "./mirage/models/#{model_name}.js"
+        end
+      end
+    end
   end
 end
