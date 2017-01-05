@@ -237,3 +237,12 @@ command "generate model" do
     end
   end
 end
+
+command "destroy model" do
+  syntax 'ex: em d model user'
+  description 'ex: em d model user'
+  action do |args, options|
+    run_cmd "ember d model #{args[0]}"
+    run_cmd "ember d mirage-model #{args[0]}"
+  end
+end
