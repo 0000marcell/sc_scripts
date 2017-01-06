@@ -214,8 +214,10 @@ command "generate model" do
   description 'create ember model and mirage model and factory'
   action do |args, options|
     model_name = args[0]
+    # ember model
     puts "generating model-mirage #{model_name}"
     run_cmd "ember g model #{args.join(" ")}"
+    # mirage model
     puts "generate mirage model".colorize(:green)
     copy "#{TEMP}/mirage-model.js",
          "./mirage/models/#{model_name}.js"
@@ -230,11 +232,39 @@ command "generate model" do
             write_in ["Model", "import"], ", #{@relationship}", 
               "./mirage/models/#{model_name}.js"
           end
-          write_after ".extend({", "\t#{@prop}: #{@relationship}(#{@model})",
+          write_after ".extend({", "\t#{@prop}: #{@relationship}('#{@model}')",
             "./mirage/models/#{model_name}.js"
         end
       end
     end
+    # mirage factory
+    puts "creating #{model_name} mirage factory ".colorize(:green)
+    run_cmd "ember g mirage-factory #{model_name}"
+    if !in_file? "ember-faker", "./package.json"
+      run_cmd "ember install ember-faker"
+    end
+    write_after "import", "import faker from 'faker';",
+            "./mirage/factories/#{model_name}.js"
+    args.each do |arg|
+      if arg != model_name and arg !~ /has-many/ and 
+                            arg !~ /belongs-to/
+        arg = arg.split(':')[0]
+        str = "\t#{arg}(){ return faker.lorem.word(); }" 
+        write_after ".extend({", str,
+            "./mirage/factories/#{model_name}.js"
+      end
+    end
+    puts "creating route handler in mirage config".colorize(:green)
+    if !in_file? "this.namespace", "./mirage/config.js"
+      write_after "default function()", "\tthis.namespace = '/api/v1';",
+            "./mirage/config.js"
+    end
+    write_after "this.namespace", "\tthis.get('#{model_name}s');",
+            "./mirage/config.js"
+
+    puts "creating 10 items of this model"
+    write_after "function(server)", "\tserver.createList('#{model_name}', 10);",
+      "./mirage/scenarios/default.js"
   end
 end
 
@@ -244,5 +274,6 @@ command "destroy model" do
   action do |args, options|
     run_cmd "ember d model #{args[0]}"
     run_cmd "ember d mirage-model #{args[0]}"
+    run_cmd "ember d mirage-factory #{args[0]}"
   end
 end

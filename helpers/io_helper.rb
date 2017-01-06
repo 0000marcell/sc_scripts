@@ -82,6 +82,7 @@ module IO_helper
 	end
 
 	def in_file?(string, path)
+    puts "checking if #{string} is in #{path}".colorize(:magenta)
 		regexp, content = Regexp.new string
 		File.open(path, 'r'){|f| content = f.read }
 		content =~ regexp
