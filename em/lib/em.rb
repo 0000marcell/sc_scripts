@@ -240,10 +240,7 @@ command "generate model" do
     # mirage factory
     puts "creating #{model_name} mirage factory ".colorize(:green)
     run_cmd "ember g mirage-factory #{model_name}"
-    if !in_file? "ember-faker", "./package.json"
-      run_cmd "ember install ember-faker"
-    end
-    write_after "import", "import faker from 'faker';",
+    write_in ["Factory", "import"], ", faker",
             "./mirage/factories/#{model_name}.js"
     args.each do |arg|
       if arg != model_name and arg !~ /has-many/ and 
@@ -254,17 +251,22 @@ command "generate model" do
             "./mirage/factories/#{model_name}.js"
       end
     end
-    puts "creating route handler in mirage config".colorize(:green)
     if !in_file? "this.namespace", "./mirage/config.js"
       write_after "default function()", "\tthis.namespace = '/api/v1';",
             "./mirage/config.js"
     end
-    write_after "this.namespace", "\tthis.get('#{model_name}s');",
+    if !in_file? "this.get('/#{pluralize(model_name)}');", "./mirage/config.js"
+      puts "creating route handler in mirage config".colorize(:green)
+      write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}');",
+              "./mirage/config.js"
+      write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}/:id');",
             "./mirage/config.js"
-
-    puts "creating 10 items of this model"
-    write_after "function(server)", "\tserver.createList('#{model_name}', 10);",
+    end
+    if !in_file? "server.createList('#{model_name}', 10);", "./mirage/scenarios/default.js"
+      puts "creating 10 items of this model"
+      write_after "function(server)", "\tserver.createList('#{model_name}', 10);",
       "./mirage/scenarios/default.js"
+    end
   end
 end
 

@@ -1,5 +1,6 @@
 require 'colorize'
 require 'erb'
+require 'byebug'
 
 #functions
 # run_cmd
@@ -85,7 +86,7 @@ module IO_helper
     puts "checking if #{string} is in #{path}".colorize(:magenta)
 		regexp, content = Regexp.new string
 		File.open(path, 'r'){|f| content = f.read }
-		content =~ regexp
+    content =~ regexp
 	end
 
 	def write_start(string, path)
@@ -127,6 +128,7 @@ module IO_helper
     File.open(path, 'r'){|f| lines = f.readlines }
     regexps = []
     ids.each { |id| regexps << Regexp.new(id) }
+    inserted_line = false
     new_lines = lines.inject([]) do |result, value|
       if value =~ regexps[0] and value =~ regexps[1]
         insert = true
@@ -134,6 +136,7 @@ module IO_helper
           insert = value =~ Regexp.new(string) ? false : true
         end
         if insert
+          inserted_line = true
           index = value =~ regexps[0]
           value.insert(index + ids[0].length, 
                      string)
@@ -143,7 +146,11 @@ module IO_helper
       end
       result << value
     end
-    File.open(path, 'w+'){|f| f.write(new_lines.join)}
+    if !inserted_line
+      puts "No new line was inserted".colorize(:red) 
+    else
+      File.open(path, 'w+'){|f| f.write(new_lines.join)}
+    end
   end
 
 	def rm_string(string, path)
