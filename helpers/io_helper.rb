@@ -161,11 +161,12 @@ module IO_helper
 		new_lines = lines.reject{|line| line =~ regexp }
 		File.open(path, 'w+'){|f| f.write(new_lines.join)}
 	end
-
+  
+  # the ids are escaped
 	def rm_block(start_id, end_id, path)
     puts "Removing string block from #{start_id} to #{end_id} #{path}".colorize(:light_red)
-		start_regexp = Regexp.new start_id
-		end_regexp = Regexp.new end_id
+		start_regexp = Regexp.new(Regexp.escape(start_id))
+		end_regexp = Regexp.new(Regexp.escape(end_id))
 		lines, new_lines, result = [], [], true
 		File.open(path, 'r'){|f| lines = f.readlines }
 		lines.chunk { |line|

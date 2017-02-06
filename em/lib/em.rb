@@ -256,10 +256,28 @@ command "generate model" do
             "./mirage/config.js"
     end
     if !in_file? "this.get('/#{pluralize(model_name)}');", "./mirage/config.js"
-      puts "creating route handler in mirage config".colorize(:green)
+      puts "creating route handlers in mirage config".colorize(:green)
       write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}');",
               "./mirage/config.js"
       write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}/:id');",
+            "./mirage/config.js"
+      str = <<~HEREDOC
+        \tthis.patch('/#{pluralize(model_name)}/:id', (schema, request) => {
+          return routeHandler.put(schema, request); 
+        \t});
+      HEREDOC
+      write_after "this.namespace", str,
+            "./mirage/config.js"
+      str = <<~HEREDOC
+        \tthis.post('/#{pluralize(model_name)}', (schema, request) => {
+          return routeHandler.put(schema, request); 
+        \t});
+      HEREDOC
+      write_after "this.namespace", str,
+            "./mirage/config.js"
+      write_after "this.namespace", "\tthis.del('/#{pluralize(model_name)}/:id');",
+            "./mirage/config.js"
+      write_after "this.namespace", "\t// --#{model_name}",
             "./mirage/config.js"
     end
     if !in_file? "server.createList('#{model_name}', 10);", "./mirage/scenarios/default.js"
@@ -274,8 +292,50 @@ command "destroy model" do
   syntax 'ex: em d model user'
   description 'ex: em d model user'
   action do |args, options|
-    run_cmd "ember d model #{args[0]}"
+    model_name = args[0]
+    run_cmd "ember d model #{model_name}"
+    run_cmd "ember d mirage-model #{model_name}"
+    run_cmd "ember d mirage-factory #{model_name}"
+    rm_block "this.post('/#{pluralize(model_name)}'",
+              "});", "./mirage/config.js"
+    rm_string "this.get('/#{pluralize(model_name)}');",
+              "./mirage/config.js"
+    rm_string "this.get('/#{pluralize(model_name)}/:id')",
+            "./mirage/config.js"
+    rm_block "this.post('/#{pluralize(model_name)}')",
+              "});", "./mirage/config.js"
+    rm_block "this.patch('/#{pluralize(model_name)}/:id')",
+              "});", "./mirage/config.js"
+    rm_string "this.del('/#{pluralize(model_name)}/:id')",
+            "./mirage/config.js"
+    rm_string "server.createList('#{model_name}', 10);",
+      "./mirage/scenarios/default.js"
+    rm_string "// --#{model_name}",
+              "./mirage/config.js"
+  end
+end
+
+command "generate join-model" do
+  syntax 'ex: em generate join-model user-tag user tag'
+  description 'ex: em generate join-model user-tag user tag'
+  action do |args, options|
+    model_name = args[0]
+    puts "generate mirage model".colorize(:green)
+    run_cmd "ember g mirage-model #{model_name}"
+    copy "#{TEMP}/mirage-model.js",
+         "./mirage/models/#{model_name}.js"
+    str = "\t#{args[1]}: belongsTo(),\n\t#{args[2]}: belongsTo()"
+    write_after ".extend({", str,
+            "./mirage/models/#{model_name}.js"
+    write_in ["Model", "import"], ", belongsTo", 
+              "./mirage/models/#{model_name}.js"
+  end
+end
+
+command "destroy join-model" do
+  syntax 'ex: em destroy join-model <user-tag>'
+  description 'ex: em destroy join-model <user-tag>'
+  action do |args, options|
     run_cmd "ember d mirage-model #{args[0]}"
-    run_cmd "ember d mirage-factory #{args[0]}"
   end
 end
