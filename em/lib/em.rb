@@ -232,7 +232,7 @@ command "generate model" do
             write_in ["Model", "import"], ", #{@relationship}", 
               "./mirage/models/#{model_name}.js"
           end
-          write_after ".extend({", "\t#{@prop}: #{@relationship}('#{@model}')",
+          write_after ".extend({", "\t#{@prop}: #{@relationship}('#{@model}'),",
             "./mirage/models/#{model_name}.js"
         end
       end
@@ -261,16 +261,18 @@ command "generate model" do
               "./mirage/config.js"
       write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}/:id');",
             "./mirage/config.js"
-      str = <<~HEREDOC
+      str = 
+      <<~HEREDOC
         \tthis.patch('/#{pluralize(model_name)}/:id', (schema, request) => {
-          return routeHandler.put(schema, request); 
+        \t\treturn routeHandler.put(schema, request); 
         \t});
       HEREDOC
       write_after "this.namespace", str,
             "./mirage/config.js"
-      str = <<~HEREDOC
+      str = 
+      <<~HEREDOC
         \tthis.post('/#{pluralize(model_name)}', (schema, request) => {
-          return routeHandler.put(schema, request); 
+        \t\treturn routeHandler.put(schema, request); 
         \t});
       HEREDOC
       write_after "this.namespace", str,
@@ -280,11 +282,7 @@ command "generate model" do
       write_after "this.namespace", "\t// --#{model_name}",
             "./mirage/config.js"
     end
-    if !in_file? "server.createList('#{model_name}', 10);", "./mirage/scenarios/default.js"
-      puts "creating 10 items of this model"
-      write_after "function(server)", "\tserver.createList('#{model_name}', 10);",
-      "./mirage/scenarios/default.js"
-    end
+    puts "if the model have MM relationships, you need to point to the join model on mirage!"
   end
 end
 
@@ -296,20 +294,16 @@ command "destroy model" do
     run_cmd "ember d model #{model_name}"
     run_cmd "ember d mirage-model #{model_name}"
     run_cmd "ember d mirage-factory #{model_name}"
-    rm_block "this.post('/#{pluralize(model_name)}'",
-              "});", "./mirage/config.js"
     rm_string "this.get('/#{pluralize(model_name)}');",
               "./mirage/config.js"
     rm_string "this.get('/#{pluralize(model_name)}/:id')",
             "./mirage/config.js"
-    rm_block "this.post('/#{pluralize(model_name)}')",
+    rm_block "this.post('/#{pluralize(model_name)}'",
               "});", "./mirage/config.js"
-    rm_block "this.patch('/#{pluralize(model_name)}/:id')",
+    rm_block "this.patch('/#{pluralize(model_name)}/:id'",
               "});", "./mirage/config.js"
     rm_string "this.del('/#{pluralize(model_name)}/:id')",
             "./mirage/config.js"
-    rm_string "server.createList('#{model_name}', 10);",
-      "./mirage/scenarios/default.js"
     rm_string "// --#{model_name}",
               "./mirage/config.js"
   end

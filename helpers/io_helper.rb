@@ -155,7 +155,7 @@ module IO_helper
 
 	def rm_string(string, path)
     puts "Removing #{string[0...8]} from #{path}".colorize(:light_red)
-		regexp = Regexp.new string
+		regexp = Regexp.new(Regexp.escape(string))
 		lines = []
 		File.open(path, 'r'){|f| lines = f.readlines }
 		new_lines = lines.reject{|line| line =~ regexp }
