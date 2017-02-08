@@ -47,6 +47,7 @@ command "generate login" do
     puts 'generating routes'
     run_cmd "ember g route home/login"
     run_cmd "ember g route home/signup"
+    run_cmd "ember g route users"
     run_cmd "ember g route users/user --path ':user_username'"
     run_cmd "ember g route index"
     puts 'copying routes'
@@ -105,11 +106,19 @@ command "generate login" do
     mkdir './app/authorizers/'
     copy "#{TEMP}/authorizer-oauth2.js",
          "./app/authorizers/oauth2.js"      
+    mkdir './app/serializers/'
+    copy "#{TEMP}/ember-mirage-serializer.js",
+         './app/serializers/application.js'
 
     run_cmd "ember install ember-cli-mirage"
     run_cmd "ember g mirage-factory user"
     run_cmd "ember g mirage-model user"
+    run_cmd "ember g mirage-serializer application"
     puts 'copying mirage files...'
+    copy "#{TEMP}/mirage-serializer.js",
+         "./mirage/serializers/application.js"
+    copy "#{TEMP}/mirage-route-handlers.js",
+         "./mirage/route-handlers.js"
     copy "#{TEMP}/mirage-factory-user.js",
          "./mirage/factories/user.js" 
     copy "#{TEMP}/mirage-models-user.js",
@@ -138,6 +147,9 @@ command "destroy login" do
     run_cmd "ember d route home/login"
     run_cmd "ember d route home/signup"
     run_cmd "ember d route users/user"
+
+    #Serializers
+    rm_dir './app/serializers'
 
     #Components
     puts 'destroying components'
@@ -257,6 +269,10 @@ command "generate model" do
     end
     if !in_file? "this.get('/#{pluralize(model_name)}');", "./mirage/config.js"
       puts "creating route handlers in mirage config".colorize(:green)
+      if !in_file "import routeHandler", "./mirage/config.js"
+        write_start "import routeHandler from './route-handlers';",
+                    "./mirage/config.js"
+      end
       write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}');",
               "./mirage/config.js"
       write_after "this.namespace", "\tthis.get('/#{pluralize(model_name)}/:id');",
