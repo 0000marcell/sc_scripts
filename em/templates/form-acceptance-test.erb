@@ -1,0 +1,29 @@
+import Ember from 'ember';
+import { module, test } from 'qunit';
+import startApp from '<%= @app_name %>/tests/helpers/start-app';
+import { authenticateSession } from '<%= @app_name %>/tests/helpers/ember-simple-auth';
+
+let application, user;
+
+module('Acceptance | project-create-form-test', {
+	beforeEach(){
+		application = startApp();		
+		user = server.create('user');
+		authenticateSession(application, {user: {id: '1' }});
+	},
+	afterEach(){
+		server.shutdown();
+		Ember.run(application, 'destroy');
+	}
+});
+
+/**
+* grab value from the mirage server
+* let project = server.schema.projects.find('1');
+/
+test('visiting /users/____marcell acpt-<%= @form_name %>-form-01', function(assert) {
+  visit('/users/____marcell');
+  andThen(function() {
+    assert.equal(currentURL(), '/users/____marcell');
+  });
+});

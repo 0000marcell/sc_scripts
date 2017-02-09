@@ -349,3 +349,47 @@ command "destroy join-model" do
     run_cmd "ember d mirage-model #{args[0]}"
   end
 end
+
+command "generate form" do
+  syntax 'em generate form <name> input:name input:username'
+  description 'e.g: em generate form user input:name input:username'
+  action do |args, options|
+    file = File.read('./package.json')
+    @app_name = JSON.parse(file)['name']
+    @form_name = args[0]  
+    run_cmd "ember g component #{@form_name}-form"
+    run_cmd "ember g acceptance-test #{@form_name}-form"
+    copy "#{TEMP}/form.js",
+         "./app/components/#{@form_name}-form.js"
+    copy "#{TEMP}/form.hbs",
+         "./app/templates/components/#{@form_name}-form.hbs"
+    copy "#{TEMP}/form-acceptance-test.erb",
+         "./tests/acceptance/#{@form_name}-form-test.js", binding
+    args.each do |arg|
+      if arg =~ /input/  
+        prop_name = arg.split(':')[1]
+        str = <<~HEREDOC
+          {{input id='test-#{@form_name}-form' 
+            value=model.#{@form_name}
+            type="text" placeholder="#{@form_name}"}}
+        HEREDOC
+        write_after "#abstract-form", str,
+          "./app/templates/components/#{@form_name}-form.hbs"
+        str = <<~HEREDOC
+          fillIn('#test-#{@form_name}-form', 'new #{@form_name}');
+        HEREDOC
+        if !in_file? "click" #TODO
+      end
+    end
+  end
+end
+
+command "destroy form" do
+  syntax 'em destroy form <name>'
+  description 'e.g: em destroy form user'
+  action do |args, options|
+    name = args[0]  
+    run_cmd "ember d component #{name}-form"
+    run_cmd "ember d acceptance-test #{name}-form"
+  end
+end
