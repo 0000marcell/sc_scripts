@@ -1,18 +1,20 @@
 {{#if loading}}
 	<p>Loading</p>
 {{else}}	
-	{{#if errors}}
-		<p>Errors: </p>
-		{{#each errors as |error|}}
-				<p>{{error}}</p>
-		{{/each}}
-	{{/if}}
-	{{#if msgs}}
-		<p>Msgs: </p>
-		{{#each msgs as |msg|}}
-			<p>{{msg}}</p>
-		{{/each}}
-	{{/if}}
+  <div id='test-af-message'>
+    {{#if errors}}
+      <p>Errors: </p>
+      {{#each errors as |error|}}
+          <p>{{error}}</p>
+      {{/each}}
+    {{/if}}
+    {{#if msgs}}
+      <p>Msgs: </p>
+      {{#each msgs as |msg|}}
+        <p>{{msg}}</p>
+      {{/each}}
+    {{/if}}
+  </div>
 	{{yield}}
-	<button {{action 'save'}}>{{text}}</button>
+	<button id='test-af-button' {{action 'save'}}>{{text}}</button>
 {{/if}}

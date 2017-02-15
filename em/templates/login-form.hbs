@@ -1,0 +1,7 @@
+{{#abstract-form text='login' submit=(action 'login')}}
+	<h5>Login</h5>
+  {{input id="test-login-email" 
+    label='email' type="text" value=user.email validate=true}}
+	{{input id="test-login-password" label='password' 
+    type="password" value=user.password validate=true}}
+{{/abstract-form}}

@@ -1,0 +1,9 @@
+run_cmd "ember install ember-cli-deploy"
+run_cmd "ember install ember-cli-deploy-build"
+run_cmd "ember install ember-cli-deploy-revision-data"
+run_cmd "ember install ember-cli-deploy-display-revisions"
+run_cmd "ember install ember-cli-deploy-gzip"
+run_cmd "ember install ember-cli-deploy-s3-index"
+run_cmd "ember install ember-cli-deploy-s3"
+
+config deploy.js 

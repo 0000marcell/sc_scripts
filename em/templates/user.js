@@ -3,14 +3,9 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
 export default Ember.Route.extend(ApplicationRouteMixin, AuthenticatedRouteMixin, {
-	session: Ember.inject.service(),
+  session: Ember.inject.service(),
 	model(param){
-		return this.store.find('user', param.user_username);
-	},
-	serialize(model) {
-		return {
-			user_username: model.get('username')
-		};
+    return this.store.queryRecord('user', {username: param.user_username});
 	},
 	actions: {
 		logout(){

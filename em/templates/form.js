@@ -1,10 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  store: Ember.inject.service(),
+  model: {<props>},
   actions: {
-    submit(model, view){
+    submit(view){
+      let model = this.get('model');
       view.set('loading', true);
-      model.save().then(() => {
+      this.get('store').createRecord('<user-model>', model).save()
+        .then(() => {
 				view.set('loading', false);
 				view.get('msgs')
 				  .pushObject('Created!');

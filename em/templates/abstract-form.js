@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 	},
 	actions: {
 		save(){
-			this.get('submit')(this.get('model'), this);	
+			this.get('submit')(this);	
 		}
 	}
 });

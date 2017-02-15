@@ -69,6 +69,8 @@ command "generate login" do
     puts 'generating components'
     run_cmd "ember g component abstract-form"
     run_cmd "ember g component session-component"
+    run_cmd "ember g component login-form"
+    run_cmd "ember g acceptance-test login"
     puts "copying components"
     copy "#{TEMP}/abstract-form.js",
          "./app/components/abstract-form.js"
@@ -78,7 +80,12 @@ command "generate login" do
          "./app/components/session-component.js"
     copy "#{TEMP}/session-component.hbs",
          "./app/templates/components/session-component.hbs"
-
+    copy "#{TEMP}/login-form.hbs",
+         "./app/templates/components/login-form.hbs"
+    template "#{TEMP}/login-form-test.erb",
+         "./tests/acceptance/login-test.js", binding
+    copy "#{TEMP}/login-form.js",
+         "./app/components/login-form.js"
     #Model
     puts 'generating models'
     run_cmd "ember g model user name:string email:string username:string password:string"
@@ -146,7 +153,9 @@ command "destroy login" do
     puts 'destroying routes'
     run_cmd "ember d route home/login"
     run_cmd "ember d route home/signup"
+    run_cmd "ember d route users"
     run_cmd "ember d route users/user"
+    run_cmd "ember d route index"
 
     #Serializers
     rm_dir './app/serializers'
@@ -155,6 +164,8 @@ command "destroy login" do
     puts 'destroying components'
     run_cmd "ember d component abstract-form"
     run_cmd "ember d component session-component"
+    run_cmd "ember d component login-form"
+    run_cmd "ember d acceptance-test login"
 
     #Model
     puts 'destroying models'
@@ -203,6 +214,21 @@ command "install s3 deployment" do
   end
 end
 
+command "uninstall s3" do
+  syntax 'uninstall s3'
+  description 'uninstall s3'
+  action do |args, options|
+    run_cmd "npm --save-dev uninstall ember-cli-deploy" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-build" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-revision-data" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-display-revisions" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-gzip" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-s3-index" 
+    run_cmd "npm --save-dev uninstall ember-cli-deploy-s3" 
+    rm_file "./config/deploy.js" 
+  end
+end
+
 command "deploy s3" do
   syntax 'em deploy s3'
   description 'deploy current project to s3 bucket'
@@ -218,6 +244,15 @@ command "install electron" do
   action do |args, options|
     puts 'Installing ember-electron'
     run_cmd "ember install ember-electron"
+  end
+end
+
+
+command "uninstall electron" do
+  syntax 'em uninstall electron'
+  description 'uninstall electron'
+  action do |args, options|
+    run_cmd "npm --save-dev uninstall ember-electron" 
   end
 end
 
@@ -258,7 +293,7 @@ command "generate model" do
       if arg != model_name and arg !~ /has-many/ and 
                             arg !~ /belongs-to/
         arg = arg.split(':')[0]
-        str = "\t#{arg}(){ return faker.lorem.word(); }" 
+        str = "\t#{arg}(){ return faker.lorem.word(); }," 
         write_after ".extend({", str,
             "./mirage/factories/#{model_name}.js"
       end
@@ -269,7 +304,7 @@ command "generate model" do
     end
     if !in_file? "this.get('/#{pluralize(model_name)}');", "./mirage/config.js"
       puts "creating route handlers in mirage config".colorize(:green)
-      if !in_file "import routeHandler", "./mirage/config.js"
+      if !in_file? "import routeHandler", "./mirage/config.js"
         write_start "import routeHandler from './route-handlers';",
                     "./mirage/config.js"
       end
@@ -363,22 +398,19 @@ command "generate form" do
          "./app/components/#{@form_name}-form.js"
     copy "#{TEMP}/form.hbs",
          "./app/templates/components/#{@form_name}-form.hbs"
-    copy "#{TEMP}/form-acceptance-test.erb",
+    template "#{TEMP}/form-acceptance-test.erb",
          "./tests/acceptance/#{@form_name}-form-test.js", binding
-    args.each do |arg|
+    args.reverse.each do |arg|
       if arg =~ /input/  
+        puts "inserting inputs".colorize(:green)
         prop_name = arg.split(':')[1]
         str = <<~HEREDOC
-          {{input id='test-#{@form_name}-form' 
-            value=model.#{@form_name}
-            type="text" placeholder="#{@form_name}"}}
+          \t{{input id='test-#{prop_name}-form' 
+            \t\tvalue=model.#{prop_name}
+            \t\ttype="text" placeholder="#{prop_name}"}}
         HEREDOC
         write_after "#abstract-form", str,
           "./app/templates/components/#{@form_name}-form.hbs"
-        str = <<~HEREDOC
-          fillIn('#test-#{@form_name}-form', 'new #{@form_name}');
-        HEREDOC
-        if !in_file? "click" #TODO
       end
     end
   end
@@ -391,5 +423,13 @@ command "destroy form" do
     name = args[0]  
     run_cmd "ember d component #{name}-form"
     run_cmd "ember d acceptance-test #{name}-form"
+  end
+end
+
+command "info" do
+  syntax 'em info <name>'
+  description 'e.g em info'
+  action do |args, options|
+    puts `tree app/#{args[0]}` 
   end
 end
