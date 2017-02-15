@@ -3,6 +3,7 @@ require 'active_support/inflector'
 
 #camelize
 #pluralize
+#singularize
 
 module STR_helper
   def camelize(string, type = 'lower')
@@ -17,5 +18,9 @@ module STR_helper
 
   def pluralize(string)
     string.pluralize
+  end
+
+  def singularize(string)
+    string.singularize
   end
 end

@@ -433,3 +433,35 @@ command "info" do
     puts `tree app/#{args[0]}` 
   end
 end
+
+command "generate crud-route" do
+  syntax 'e.g em generate crud-route users/user todo'
+  description 'e.g generate crud-route users/user todo'
+  action do |args, options|
+    puts "creating crud routes #{args[0]} #{args[1]}".colorize(:green)
+    prefix   = args[0]
+    model_p  = pluralize(args[1])
+    @model_s  = singularize(args[1]) 
+    run_cmd "ember g route #{prefix}/#{model_p}" 
+    run_cmd "ember g route #{prefix}/#{model_p}/new"
+    run_cmd "ember g route #{prefix}/#{model_p}/index"
+    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s} --path :id"
+    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s}/index"
+    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s}/edit"
+    puts "copying index route".colorize(:green)
+    template "#{TEMP}/crud-route-index.erb",
+      "./app/routes/#{prefix}/#{model_p}/#{@model_s}.js", binding
+    puts "routes generated!".colorize(:green)
+  end
+end
+
+command "destroy crud-route" do
+  syntax 'e.g em destroy crud-route users/user todo'
+  description 'e.g em destroy crud-route users/user todo'
+  action do |args, options|
+    puts "destroying crud routes #{args[0]} #{args[1]}".colorize(:green)
+    prefix = args[0]
+    model_p = pluralize(args[1])
+    run_cmd "ember d route #{prefix}/#{model_p}"
+  end
+end
