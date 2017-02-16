@@ -20,6 +20,10 @@ module('Acceptance | project-create-form-test', {
 /**
 * grab value from the mirage server
 * let project = server.schema.projects.find('1');
+* project.name, project.collaborators.models[1].id
+* test select ember-selectize
+* click('.selectize-input');
+* click('.selectize-dropdown-content div:eq(2)');
 */
 test('visiting /users/____marcell acpt-<%= @form_name %>-form-01', function(assert) {
   visit('/users/____marcell');

@@ -36,8 +36,18 @@ command "generate login" do
     run_cmd "rails g controller api/v1/sessions"
     copy "#{TEMP}/sessions_controller.rb",
          "./app/controllers/api/v1/sessions_controller.rb"
+
+    # creating sessions helper
+    run_cmd "rails g helper sessions"
+    copy "#{TEMP}/sessions_helper.rb",
+         "./app/helpers/sessions_helper.rb"
     # creating user model
-    run_cmd "rails g model user"
+    user_args = <<~HEREDOC
+      name:string email:string password_digest:string admin:boolean
+      activated:boolean activation_digest:string reset_digest:string
+      activated_at:datetime reset_sent_at:datetime  
+    HEREDOC
+    run_cmd "rails g model user #{user_args}"
     copy "#{TEMP}/user_model.rb",
          "./app/models/user.rb"
 
@@ -65,6 +75,8 @@ command "destroy login" do
   description 'removes default rails api program'
   action do |args, options|
     # removing doorkeeper
+    rm_file "./config/initializers/doorkeeper.rb"
+    rm_string "use_doorkeeper", "./config/routes.rb"
     rm_string "'doorkeeper'", './Gemfile' 
     run_cmd "bundle"
     run_cmd "rails d doorkeeper:install"
@@ -73,6 +85,8 @@ command "destroy login" do
          "./app/controllers/application_controller.rb"
     # removing session controller
     run_cmd "rails d controller api/v1/sessions"
+    # removing session helper
+    run_cmd "rails d helper sessions"
     # removing user model
     run_cmd "rails d model user"
     # removing user serializer

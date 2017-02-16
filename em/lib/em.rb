@@ -412,6 +412,17 @@ command "generate form" do
         write_after "#abstract-form", str,
           "./app/templates/components/#{@form_name}-form.hbs"
       end
+      if arg =~ /select/
+        puts "inserting select".colorize(:green)
+        prop_name = arg.split(':')[1]
+        str = <<~HEREDOC
+          \t{{ember-selectize id='test-#{prop_name}-form' content=model.#{prop_name}
+            \t\toptionValuePath="content.id" optionLabelPath="content.name" 
+            \t\tselection=selected#{prop_name} multiple= placeholder="" }}  
+        HEREDOC
+        write_after "#abstract-form", str,
+          "./app/templates/components/#{@form_name}-form.hbs"
+      end
     end
   end
 end
@@ -460,8 +471,15 @@ command "destroy crud-route" do
   description 'e.g em destroy crud-route users/user todo'
   action do |args, options|
     puts "destroying crud routes #{args[0]} #{args[1]}".colorize(:green)
-    prefix = args[0]
+    prefix  = args[0]
     model_p = pluralize(args[1])
+    model_s = singularize(args[1])
     run_cmd "ember d route #{prefix}/#{model_p}"
+    run_cmd "ember d route #{prefix}/#{model_p}/new"
+    run_cmd "ember d route #{prefix}/#{model_p}/index"
+    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}"
+    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}/index"
+    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}/edit"
+    puts "route #{prefix}/#{model_s} removed".colorize(:green)
   end
 end

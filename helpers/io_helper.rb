@@ -73,7 +73,11 @@ module IO_helper
 
 	def rm_file(path)
     puts "rm file #{path}".colorize(:light_red)
-		FileUtils.remove_file path
+    if File.file? path
+		  FileUtils.remove_file path
+    else
+      puts "File #{path} does not exit!".colorize(:light_red)
+    end
 	end
 
 	# remove folder recursively 
