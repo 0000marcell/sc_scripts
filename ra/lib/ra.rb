@@ -30,26 +30,30 @@ command "generate login" do
     write_end "gem 'doorkeeper'", "./Gemfile"
     run_cmd "bundle"
     run_cmd "rails g doorkeeper:install"
-    copy "#{TEMP}/application_controller.rb",
-         "./app/controllers/application_controller.rb"
+    run_cmd "rails g doorkeeper:migration"
     # creating sessions controller
     run_cmd "rails g controller api/v1/sessions"
     copy "#{TEMP}/sessions_controller.rb",
          "./app/controllers/api/v1/sessions_controller.rb"
 
+    # creating session controller test
+    copy "#{TEMP}/sessions_controller_test.rb",
+         "./test/controllers/api/v1/sessions_controller_test.rb"
+    
     # creating sessions helper
     run_cmd "rails g helper sessions"
     copy "#{TEMP}/sessions_helper.rb",
          "./app/helpers/sessions_helper.rb"
     # creating user model
-    user_args = <<~HEREDOC
-      name:string email:string password_digest:string admin:boolean
-      activated:boolean activation_digest:string reset_digest:string
-      activated_at:datetime reset_sent_at:datetime  
-    HEREDOC
+    user_args = 'name:string username:string email:string password_digest:string admin:boolean ' +
+      'activated:boolean activation_digest:string reset_digest:string ' + 
+      'activated_at:datetime reset_sent_at:datetime'
     run_cmd "rails g model user #{user_args}"
     copy "#{TEMP}/user_model.rb",
          "./app/models/user.rb"
+
+    copy "#{TEMP}/users.yml",
+         "./test/fixtures/users.yml"
 
     # user serializer
     run_cmd "rails g serializer user name username email" 
@@ -67,6 +71,27 @@ command "generate login" do
     run_cmd "rails g mailer api/v1/user"
     copy "#{TEMP}/user_mailer.rb",
          "./app/mailers/api/v1/user_mailer.rb"
+
+    # insert api/v1/login route
+    if !in_file? "namespace :api",
+      "./config/routes.rb"
+      after_id = "use_doorkeeper"
+      str = <<~HEREDOC
+        \tnamespace :api do
+          \t\tnamespace :v1 do
+            \t\t\tpost '/login', to: 'sessions#create'
+          \t\tend
+        \tend
+      HEREDOC
+    else
+      after_id = "namespace :v1"
+      str = "\t\t\tpost '/login', to: 'sessions#create'"
+    end
+    write_after after_id, str,
+      "./config/routes.rb"
+
+    #running migrations
+    run_cmd "rails db:migrate"
   end
 end
 
@@ -77,12 +102,11 @@ command "destroy login" do
     # removing doorkeeper
     rm_file "./config/initializers/doorkeeper.rb"
     rm_string "use_doorkeeper", "./config/routes.rb"
+    rm_string "post '/login', to: 'sessions#create'",
+              "./config/routes.rb"
     rm_string "'doorkeeper'", './Gemfile' 
     run_cmd "bundle"
     run_cmd "rails d doorkeeper:install"
-    rm_file "./app/controllers/application_controller.rb" 
-    copy "#{TEMP}/default_application_controller.rb",
-         "./app/controllers/application_controller.rb"
     # removing session controller
     run_cmd "rails d controller api/v1/sessions"
     # removing session helper

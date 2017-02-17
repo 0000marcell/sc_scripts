@@ -1,0 +1,24 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+root:
+  id: 1
+  name: 'Marcell Monteiro Cruz' 
+  username: '____marcell'
+  email: '0000marcell@gmail.com' 
+  password_digest: '$2a$10$A1zJrny0ukElV0vjp.m8DOUtdU99ClbWaE5FuRdX7BaqKYg.f0s86'
+  admin: true
+  activated: true 
+  activation_digest: '$10$bNf1rWKUQ25YRVseEOsIRubsMTMaJqChZl721xIbgwY4a9JSjr9ay'
+  reset_digest: '$2a$10$L3C3v6Pp2pbbGeyqnoVtAevOhzx2M8YJDuWPlPrpJGZmYwKydkfk.'
+  reset_sent_at: <%= Time.zone.now %>
+  activated_at: 2016-06-20 20:33:02
+
+# user not activated
+johndoe:
+  id: 2
+  name: 'john doe' 
+  username: 'johndoe'
+  email: 'parkeergarage2@gmail.com' 
+  password_digest: '$2a$10$A1zJrny0ukElV0vjp.m8DOUtdU99ClbWaE5FuRdX7BaqKYg.f0s86'
+  activated: false 
+  activation_digest: '$2a$04$x/MSawPURPkXQIGdp.HULONZjq0xpU1MEgVnyp7xCvd64dmDi1zgO'
+  admin: false
