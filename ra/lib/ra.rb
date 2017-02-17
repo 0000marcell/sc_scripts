@@ -80,12 +80,16 @@ command "generate login" do
         \tnamespace :api do
           \t\tnamespace :v1 do
             \t\t\tpost '/login', to: 'sessions#create'
+            \t\t\tget '/current-user', to: 'sessions#create'
           \t\tend
         \tend
       HEREDOC
     else
       after_id = "namespace :v1"
-      str = "\t\t\tpost '/login', to: 'sessions#create'"
+      str = <<~HEREDOC
+        \t\t\tpost '/login', to: 'sessions#create'
+         \t\t\tget '/current-user', to: 'sessions#create'
+      HEREDOC
     end
     write_after after_id, str,
       "./config/routes.rb"

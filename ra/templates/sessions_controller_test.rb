@@ -41,4 +41,14 @@ class Api::V1::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal response_json['error_description'], 
       "This user doesn't exist!"
   end
+
+  test "gets current loged in user" do
+    post '/api/v1/login', params: {username: @user.email,
+                                  password: '123456'} 
+    assert_response :success   
+    get '/api/v1/current-user'
+    assert_response :success   
+    response_json = JSON.parse(response.body)
+    assert_equal response_json['username'], '____marcell' 
+  end
 end
