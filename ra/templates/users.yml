@@ -7,9 +7,9 @@ root:
   password_digest: '$2a$10$A1zJrny0ukElV0vjp.m8DOUtdU99ClbWaE5FuRdX7BaqKYg.f0s86'
   admin: true
   activated: true 
-  activation_digest: '$10$bNf1rWKUQ25YRVseEOsIRubsMTMaJqChZl721xIbgwY4a9JSjr9ay'
-  reset_digest: '$2a$10$L3C3v6Pp2pbbGeyqnoVtAevOhzx2M8YJDuWPlPrpJGZmYwKydkfk.'
-  reset_sent_at: <%= Time.zone.now %>
+  activation_digest: "$2a$04$otZifUBuGHb1VqADMRDMA.397RVY5cwI3.6YtK8EnWXZ73HjV2YPC"
+  reset_digest: "$2a$04$otZifUBuGHb1VqADMRDMA.397RVY5cwI3.6YtK8EnWXZ73HjV2YPC"
+  reset_sent_at: <%= 3.hours.ago %>
   activated_at: 2016-06-20 20:33:02
 
 # user not activated
@@ -20,5 +20,5 @@ johndoe:
   email: 'parkeergarage2@gmail.com' 
   password_digest: '$2a$10$A1zJrny0ukElV0vjp.m8DOUtdU99ClbWaE5FuRdX7BaqKYg.f0s86'
   activated: false 
-  activation_digest: '$2a$04$x/MSawPURPkXQIGdp.HULONZjq0xpU1MEgVnyp7xCvd64dmDi1zgO'
+  activation_digest: "$2a$04$otZifUBuGHb1VqADMRDMA.397RVY5cwI3.6YtK8EnWXZ73HjV2YPC"
   admin: false
