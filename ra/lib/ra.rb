@@ -67,8 +67,8 @@ command "generate login" do
          "./app/mailers/application_mailer.rb"
 
     # creating user mailer
-    puts "creating user mailer"
-    run_cmd "rails g mailer api/v1/user".color(:green)
+    puts "creating user mailer".colorize(:green)
+    run_cmd "rails g mailer api/v1/user"
     copy "#{TEMP}/user_mailer.rb",
          "./app/mailers/api/v1/user_mailer.rb"
 
@@ -77,7 +77,7 @@ command "generate login" do
       "./test/mailers/api/v1/user_mailer_test.rb"
 
     # copying mailers templates
-    puts "copying mailer templates".color(:green)
+    puts "copying mailer templates".colorize(:green)
     copy "#{TEMP}/account_activation.html.erb",
     "./app/views/api/v1/user_mailer/account_activation.html.erb"
     copy "#{TEMP}/account_activation.text.erb",
@@ -115,7 +115,7 @@ command "generate login" do
       "./config/routes.rb"
 
     # Creating password reset controller
-    puts "Creating password reset controller".color(:green)
+    puts "Creating password reset controller".colorize(:green)
     run_cmd "rails g controller api/v1/password_resets"
 
     # Copying password reset controller
@@ -123,11 +123,11 @@ command "generate login" do
          "./app/controllers/api/v1/password_resets_controller.rb"
 
     # Copying password reset controller test
-    copy "#{TEMP}/password_reset_controller_test.rb",
-         "./test/controllers/api/v1/password_reset_controller_test.rb"
+    copy "#{TEMP}/password_resets_controller_test.rb",
+         "./test/controllers/api/v1/password_resets_controller_test.rb"
 
     #Creating account activation controller
-    puts "Creating account activation controller".color(:green)
+    puts "Creating account activation controller".colorize(:green)
     run_cmd "rails g controller account_activations"
      
     #Copying account activation controller
@@ -135,9 +135,74 @@ command "generate login" do
          "./app/controllers/account_activations_controller.rb"
 
     # Copying account activation test
-    copy "#{TEMP}/account_activations_test.rb",
-      "./test/controllers/account_activations_test.rb"
+    copy "#{TEMP}/account_activations_controller_test.rb",
+      "./test/controllers/account_activations_controller_test.rb"
 
+    # Insert mailer configuration 
+    puts "Inserting mailer configuration".colorize(:green)
+    # mailer options
+    str = <<~HEREDOC
+      \thost = '0.0.0.0:3000'
+      \tconfig.action_mailer.default_url_options = { host: host    }
+      \tconfig.action_mailer.raise_delivery_errors = true 
+      \tconfig.action_mailer.perform_deliveries = true  
+      \tconfig.action_mailer.default :charset => "utf-8"  
+      \tconfig.action_mailer.delivery_method = :smtp
+      \tconfig.action_mailer.smtp_settings = { domain: host }  
+    HEREDOC
+    after_id = "mailer"
+    write_after after_id, str,
+      "./config/environments/development.rb"
+    write_after after_id, str,
+      "./config/environments/production.rb"
+    write_after after_id, str,
+      "./config/environments/test.rb"
+    str = <<~HEREDOC
+      ActionMailer::Base.delivery_method = :smtp
+      ActionMailer::Base.smtp_settings = {
+        :user_name => ENV['SENDGRID_USERNAME'],
+        :password =>  ENV['SENDGRID_PASSWORD'],
+        :address => 'smtp.sendgrid.net',
+        :port => 587,
+        :authentication => :plain,
+        :enable_starttls_auto => true
+      }
+    HEREDOC
+    # writing not authorized error on application controller
+    write_after "Rails.application.initialize", str,
+      "./config/environment.rb" 
+    if in_file? "private", 
+      "./app/controllers/application_controller.rb"
+      str = <<~HEREDOC
+        \t\tdef doorkeeper_unauthorized_render_options(error: nil)
+          \t\t{ json: { error: "Not authorized!" } }	
+        \t\tend
+      HEREDOC
+    else
+      str = <<~HEREDOC
+        \tprivate  
+        \t\tdef doorkeeper_unauthorized_render_options(error: nil)
+          \t\t\t{ json: { error: "Not authorized!" } }	
+        \t\tend
+      HEREDOC
+    end
+    write_after "Application", str,
+      "./app/controllers/application_controller.rb" 
+
+    # creating users controller 
+    puts "Creating users controller".colorize(:gren)
+    run_cmd "rails g controller api/v1/user"
+    # copying users controller
+    copy "#{TEMP}/users_controller.rb",
+      "app/controllers/api/v1/users_controller.rb"
+    # copying users controller test
+    copy "#{TEMP}/users_controller_test.rb",
+      "test/controllers/api/v1/users_controller_test.rb"
+
+    # inserting users controller routes
+    puts "insert users routes".colorize(:green)
+    write_after ":v1", "resources :users",
+      "./config/routes.rb"
     #running migrations
     run_cmd "rails db:migrate"
   end
@@ -180,5 +245,9 @@ command "destroy login" do
     # removing controller account_activations
     puts "removing controller account_activations".colorize(:green)
     run_cmd "rails d controller account_activations"
+    # removing users controller    
+    run_cmd "rails d controller api/v1/user"
+    # removing user from routes
+    rm_string "resources :users", "./config/routes.rb"
   end
 end
