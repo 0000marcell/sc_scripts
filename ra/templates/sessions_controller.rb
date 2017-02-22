@@ -3,7 +3,6 @@ class Api::V1::SessionsController < ApplicationController
     user = User.find_by(email: params[:username].downcase)
 		if user && user.authenticate(params[:password]) &&
       user.activated?
-      SessionsHelper.set_current_user(user)
       token = Doorkeeper::AccessToken.create(
         resource_owner_id: user.id,
         application_id: '1',
@@ -27,10 +26,5 @@ class Api::V1::SessionsController < ApplicationController
       end
       render json: {error_description: msg}, status: 422
     end
-  end
-
-  def get_current_user
-    puts SessionsHelper.current_user
-    render json: SessionsHelper.current_user
   end
 end

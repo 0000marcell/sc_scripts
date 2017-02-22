@@ -13,7 +13,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     get "/api/v1/users", params: @header  
     response_json = JSON.parse(response.body)
     assert_response :success
-    assert_equal response_json.length, 2 
+    assert_equal 2, response_json['data'].length
   end
 
   test "block access when not authorized" do
@@ -27,13 +27,14 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     get "/api/v1/users/1", params: @header
     assert_response :success
     response_json = JSON.parse(response.body)
-    assert_equal "Marcell Monteiro Cruz", response_json['name']
+    assert_equal "Marcell Monteiro Cruz", 
+      response_json['data']['attributes']['name']
   end
 
   test "create new user" do
     post "/api/v1/users", params: {name: "joao da silva", username: "____joao",
       email: "joao@gmail.com", password: "123456", password_confirmation: "123456"}
     response_json = JSON.parse(response.body)
-    assert_equal response_json['username'], '____joao'
+    assert_equal '____joao', response_json['data']['attributes']['username']
   end
 end

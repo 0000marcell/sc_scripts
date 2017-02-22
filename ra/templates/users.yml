@@ -10,6 +10,7 @@ root:
   activation_digest: "$2a$04$otZifUBuGHb1VqADMRDMA.397RVY5cwI3.6YtK8EnWXZ73HjV2YPC"
   reset_digest: "$2a$04$otZifUBuGHb1VqADMRDMA.397RVY5cwI3.6YtK8EnWXZ73HjV2YPC"
   reset_sent_at: <%= 3.hours.ago %>
+  remember_digest: nil
   activated_at: 2016-06-20 20:33:02
 
 # user not activated

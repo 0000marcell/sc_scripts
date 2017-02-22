@@ -16,6 +16,9 @@ command :new do
     run_cmd "rails new #{args[0]} --api --skip-bundle"
     cd_in args[0]
     write_end "gem 'active_model_serializers', github: 'rails-api/active_model_serializers', tag: 'v0.10.0.rc4'", "./Gemfile"
+    # copying json_api initializer
+    copy "#{TEMP}/json_api.rb", 
+         "./config/initializers/json_api.rb"
     run_cmd "bundle"
     puts "command finished".colorize(:green)
   end
@@ -46,7 +49,7 @@ command "generate login" do
          "./app/helpers/sessions_helper.rb"
     # creating user model
     user_args = 'name:string username:string email:string password_digest:string admin:boolean ' +
-      'activated:boolean activation_digest:string reset_digest:string ' + 
+      'activated:boolean activation_digest:string reset_digest:string remember_digest:string' + 
       'activated_at:datetime reset_sent_at:datetime'
     run_cmd "rails g model user #{user_args}"
     copy "#{TEMP}/user_model.rb",
@@ -95,7 +98,6 @@ command "generate login" do
         \tnamespace :api do
           \t\tnamespace :v1 do
             \t\t\tpost '/login', to: 'sessions#create'
-            \t\t\tget '/current_user', to: 'sessions#get_current_user'
             \t\t\tresources :password_resets,     only: [:new, :create, :edit, :update]
           \t\tend
         \tend
@@ -104,7 +106,6 @@ command "generate login" do
       after_id = "namespace :v1"
       str = <<~HEREDOC
         \t\t\tpost '/login', to: 'sessions#create'
-         \t\t\tget '/current_user', to: 'sessions#get_current_user'
       HEREDOC
     end
     write_after after_id, str,
