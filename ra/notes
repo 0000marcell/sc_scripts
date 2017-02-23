@@ -1,1 +1,8 @@
-rails g doorkeeper:migration
+model 
+migration
+model test
+model fixture
+insert resources in the route #api/v1
+serializer
+controller                    #api/v1
+controller test               #api/v1

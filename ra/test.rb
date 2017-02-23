@@ -1,3 +1,2 @@
-str = "\tpost \'/login\', to: \'sessions#create\'"
-puts str
-
+str = "marcell"
+puts str.capitalize

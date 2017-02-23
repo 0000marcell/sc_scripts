@@ -483,3 +483,11 @@ command "destroy crud-route" do
     puts "route #{prefix}/#{model_s} removed".colorize(:green)
   end
 end
+
+command "testing" do
+  syntax 'testing'
+  description 'testing'
+  action do |args, options|
+    puts camelize("this is just a test")
+  end
+end

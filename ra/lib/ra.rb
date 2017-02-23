@@ -4,7 +4,7 @@ require 'colorize'
 program :name, 'ra'
 program :version, Ra::VERSION
 program :description, 'ra utility program.'
-helpers 'IO'
+helpers 'IO', 'STR'
 
 TEMP = File.dirname(__FILE__) + '/../templates'
 
@@ -250,5 +250,61 @@ command "destroy login" do
     run_cmd "rails d controller api/v1/user"
     # removing user from routes
     rm_string "resources :users", "./config/routes.rb"
+  end
+end
+
+command "generate model" do
+  syntax 'ra generate model name:string user:belongs-to'
+  description  <<~HEREDOC
+    e.g ra generate model name:string user:belongs-to
+    you dont need to use api/v1, it will be infered
+  HEREDOC
+  action do |args, options|
+    @model_s = singularize(args[0])
+    @model_p = pluralize(@model_s)
+    @model_p_c = @model_p.capitalize
+    @model_s_c = @model_s.capitalize
+    @attr = args[1].split(':')[0]
+    puts "generating model #{@model_s}".colorize(:green)
+    run_cmd "rails g model #{args.join(" ")}"
+    run_cmd "rails g serializer #{args.join(" ")}"  
+    run_cmd "rails g controller api/v1/#{@model_p}"
+    write_after ":v1 do", "\t\tresources :#{@model_p}",
+      "config/routes.rb"
+
+    template "#{TEMP}/controller_test.erb",
+      "./test/controllers/api/v1/#{@model_p}_controller_test.rb",
+      binding
+    template "#{TEMP}/controller.erb",
+      "./app/controllers/api/v1/#{@model_p}_controller.rb",
+      binding
+    run_cmd "rails db:migrate"
+    puts <<~HEREDOC
+      Now you need to alter the fixtures, include has_many etc ...
+      rel on the other side of the relation on the model and serializer
+      and finish writing the controller tests
+      you also need to change the permit attribute
+    HEREDOC
+  end
+end
+
+command "destroy model" do
+  syntax 'ra destroy model post'
+  description 'ra destroy model post'
+  action do |args, options|
+    model_s = singularize(args[0])
+    model_p = pluralize(model_s)
+    puts "destroying model #{model_s}".colorize(:green)
+    run_cmd "rails d model #{model_s}"
+    run_cmd "rails d serializer #{model_s}"  
+    run_cmd "rails d controller api/v1/#{model_p}"
+    # removing resources from the routes
+    rm_string "resources :#{model_p}",
+      "./config/routes.rb"
+    puts <<~HEREDOC
+      model, serializer and controller removed
+      now you need to removed the relationships on the 
+      other models that used the removed model
+    HEREDOC
   end
 end

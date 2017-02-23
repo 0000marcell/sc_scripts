@@ -6,6 +6,7 @@ require 'simple_commander/import'
 require 'simple_commander/import'
 require 'io_helper'
 require 'http_helper'
+require 'str_helper'
 
 
 require 'ra'
