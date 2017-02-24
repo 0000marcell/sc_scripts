@@ -254,12 +254,15 @@ command "destroy login" do
 end
 
 command "generate model" do
-  syntax 'ra generate model name:string user:belongs-to'
+  syntax 'ra generate model name:string user:references --rel OM'
   description  <<~HEREDOC
-    e.g ra generate model name:string user:belongs-to
+    e.g ra generate model name:string user:belongs-to --rel OM
     you dont need to use api/v1, it will be infered
+    rel defaults to OM
   HEREDOC
+  option '--rel STRING', String, 'OO OM and MM'
   action do |args, options|
+    options.default rel: 'OM'
     @model_s = singularize(args[0])
     @model_p = pluralize(@model_s)
     @model_p_c = @model_p.capitalize
@@ -271,11 +274,11 @@ command "generate model" do
     run_cmd "rails g controller api/v1/#{@model_p}"
     write_after ":v1 do", "\t\tresources :#{@model_p}",
       "config/routes.rb"
-
-    template "#{TEMP}/controller_test.erb",
+    
+    template "#{TEMP}/controller_#{options.rel}_test.erb",
       "./test/controllers/api/v1/#{@model_p}_controller_test.rb",
       binding
-    template "#{TEMP}/controller.erb",
+    template "#{TEMP}/controller_#{options.rel}.erb",
       "./app/controllers/api/v1/#{@model_p}_controller.rb",
       binding
     run_cmd "rails db:migrate"
@@ -283,6 +286,8 @@ command "generate model" do
       Now you need to alter the fixtures, include has_many etc ...
       rel on the other side of the relation on the model and serializer
       and finish writing the controller tests
+      dont forget dependent: :destroy on the relationship 
+      and to change the permit of the generated model
     HEREDOC
   end
 end
@@ -305,5 +310,14 @@ command "destroy model" do
       now you need to removed the relationships on the 
       other models that used the removed model
     HEREDOC
+  end
+end
+
+command "testing" do
+  syntax 'testing'
+  description 'testing'
+  option '--rel STRING', String, 'OO OM and MM' 
+  action do |args, options|
+    puts "#{options.rel}"   
   end
 end

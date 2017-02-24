@@ -1,0 +1,53 @@
+require 'test_helper'
+
+class Api::V1::<%= @model_p_c %>ControllerTest < ActionDispatch::IntegrationTest
+  def setup
+    @users = [users(:root), users(:johndoe)]
+    post '/api/v1/login', params: {username: @users[0].email,
+                                  password: '123456'}
+    response_json = JSON.parse(response.body)
+    @header = {Authorization: "Bearer #{response_json['access_token']}"}
+  end
+
+  test "block access when not authorized" do
+    get "/api/v1/<%= @model_s %>s/1"
+    assert_response 401
+    response_json = JSON.parse(response.body)
+    assert_equal response_json['error'], "Not authorized!"
+  end
+  
+  test "get specific <%= @model_s %>" do
+    get "/api/v1/<%= @model_s %>s/1", headers: @header
+    assert_response :success
+    response_json = JSON.parse(response.body)
+    assert_equal 'name 1', 
+      response_json['data']['attributes']['name']
+  end
+
+  test "create new <%= @model_s %>" do
+    delete "/api/v1/<%= @model_s %>s/1",
+      headers: @header 
+    assert_response :success
+    post "/api/v1/<%= @model_s %>s", 
+      params: { <%= @model_s %>: { name: 'new name' } },
+      headers: @header
+    response_json = JSON.parse(response.body)
+    assert_equal 'new name', response_json['data']['attributes']['name']
+  end
+  
+  test "edit <%= @model_s %>" do
+    patch "/api/v1/<%= @model_s %>s/1", 
+      params: { <%= @model_s %>: { name: 'edited name' } }, headers: @header
+    get "/api/v1/<%= @model_s %>s/1", headers: @header
+    assert_response :success
+    response_json = JSON.parse(response.body)
+    assert_equal 'edited name', 
+      response_json['data']['attributes']['name']
+  end
+
+  test "delete <%= @model_s %>" do
+    delete "/api/v1/<%= @model_s %>s/1",
+      headers: @header 
+    assert_response :success
+  end
+end
