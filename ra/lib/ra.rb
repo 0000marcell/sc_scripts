@@ -260,7 +260,7 @@ command "generate model" do
     you dont need to use api/v1, it will be infered
     rel defaults to OM
   HEREDOC
-  option '--rel STRING', String, 'OO OM and MM'
+  option '--rel STRING', String, 'OO OM and MM:user'
   action do |args, options|
     options.default rel: 'OM'
     @model_s = singularize(args[0])

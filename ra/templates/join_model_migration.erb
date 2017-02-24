@@ -1,0 +1,8 @@
+class CreateJoinTable<%= @model_1_p_c %><%= @model_2_p_c %> < ActiveRecord::Migration[5.0]
+  def change
+    create_table :<%= @model_1_p %>_<%= @model_2_p %>, id: false do |t|
+      t.belongs_to :<%= @model_1_s %>, index: true
+      t.belongs_to :<%= @model_2_s %>, index: true
+    end
+  end
+end
