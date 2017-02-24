@@ -283,7 +283,6 @@ command "generate model" do
       Now you need to alter the fixtures, include has_many etc ...
       rel on the other side of the relation on the model and serializer
       and finish writing the controller tests
-      you also need to change the permit attribute
     HEREDOC
   end
 end

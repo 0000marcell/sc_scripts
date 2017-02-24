@@ -15,7 +15,7 @@ class Api::V1::<%= @model_p_c %>Controller < ApplicationController
 
   # POST /api/v1/<%= @model_p %>
   def create
-    @api_v1_<%= @model_p %> = 
+    @api_v1_<%= @model_s %> = 
       current_resource_owner.<%= @model_p %>.build(api_v1_<%= @model_s %>_params)
     if @api_v1_<%= @model_s %>.save 
 			render json: @api_v1_<%= @model_s %>

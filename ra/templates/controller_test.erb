@@ -36,13 +36,13 @@ class Api::V1::<%= @model_p_c %>ControllerTest < ActionDispatch::IntegrationTest
       params: { #TODO },
       headers: @header
     response_json = JSON.parse(response.body)
-    assert_equal '<%= new @attr %>', response_json['data']['attributes']['<%= @attr %>']
+    assert_equal 'new <%= @attr %>', response_json['data']['attributes']['<%= @attr %>']
   end
   
   test "edit <%= @model_s %>" do
     patch "/api/v1/<%= @model_p %>/1", 
       params: { #TODO }, headers: @header
-    get "/api/v1/<%= @model_p %>/1", params: @header
+    get "/api/v1/<%= @model_p %>/1", headers: @header
     assert_response :success
     response_json = JSON.parse(response.body)
     assert_equal 'edited <%= @attr %>', 
