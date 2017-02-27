@@ -263,7 +263,7 @@ command "generate model" do
   option '--rel STRING', String, 'OO OM and MM:user'
   action do |args, options|
     options.default rel: 'OM'
-    if options.rel == 'MM'
+    if options.rel =~ /MM/
       model_a = args[0]
       model_b = options.rel.split(':')[1]
       if model_a < model_b 
@@ -273,23 +273,31 @@ command "generate model" do
         @model_1_s = model_b
         @model_2_s = model_a
       end
+      @model_s = @model_1_s
+      @model_p = pluralize(@model_1_s)
+      @model_p_c = @model_p.capitalize
+      @model_s_c = @model_s.capitalize
       @model_1_p   = pluralize(@model_1_s)
       @model_1_p_c = @model_1_p.capitalize
       @model_2_p   = pluralize(@model_2_s)
+      @model_2_p_c = @model_2_p.capitalize
       @rel = options.rel.split(':')[0]
       run_cmd <<~HEREDOC
         rails generate migration create_join_table_#{@model_1_p}_#{@model_2_p}
       HEREDOC
+      file_name = find_file("create_join_table", "./db/migrate")
       template "#{TEMP}/join_model_migration.erb",
-        ""
+        "./db/migrate/#{file_name}", binding
+      template "#{TEMP}/join_fixture.erb",
+        "./test/fixtures/#{@model_1_p}_#{@model_2_p}.yml", binding
     else
       @model_s = singularize(args[0])
       @model_p = pluralize(@model_s)
       @model_p_c = @model_p.capitalize
       @model_s_c = @model_s.capitalize
-      @attr = args[1].split(':')[0]
       @rel = options.rel
     end
+    @attr = args[1].split(':')[0]
     puts "generating model #{@model_s}".colorize(:green)
     run_cmd "rails g model #{args.join(" ")}"
     run_cmd "rails g serializer #{args.join(" ")}"  
