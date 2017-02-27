@@ -1,0 +1,54 @@
+class Api::V1::<%= @model_p_c %>Controller < ApplicationController
+  before_action :set_api_v1_<%= @model_s %>, only: [:show, :edit, :update, :destroy]
+  before_action :doorkeeper_authorize!
+
+  # GET /api/v1/<%= @model_p %>
+  def index
+	  @api_v1_<%= @model_p %> = current_resource_owner.<%= @model_p %>
+		render json: @api_v1_<%= @model_p %>
+  end
+
+  # GET /api/v1/<%= @model_p %>/1
+  def show
+		render json: @api_v1_<%= @model_s %>
+  end
+
+  # POST /api/v1/<%= @model_p %>
+  def create
+    @api_v1_<%= @model_s %> = 
+      current_resource_owner.<%= @model_p %>.build(api_v1_<%= @model_s %>_params)
+    if @api_v1_<%= @model_s %>.save 
+			render json: @api_v1_<%= @model_s %>
+    else
+			render json: { <%= @model_s %>: { msg:  "<%= @model_s %> was not salved!" } }, status: 422
+    end
+  end
+
+  # PATCH/PUT /api/v1/<%= @model_p %>/1
+  def update
+		@api_v1_<%= @model_s %> = current_resource_owner.<%= @model_p %>.find(params[:id])
+    if @api_v1_<%= @model_s %>.update(api_v1_<%= @model_s %>_params)
+			render json: @api_v1_<%= @model_s %>
+		else
+			render json: { <%= @model_s %>: { msg:  "<%= @model_s %> was not salved!" } }, status: 422
+    end
+  end
+
+  # DELETE /api/v1/<%= @model_p %>/1
+  def destroy
+		current_resource_owner.<%= @model_p %>.find(params[:id]).destroy
+		head:no_content
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_api_v1_<%= @model_s %>
+      @api_v1_<%= @model_s %> = <%= @model_s_c %>.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def api_v1_<%= @model_s %>_params
+      # e.g ... .permit(:name, :user_id)
+			params.require(:<%= @model_s %>).permit(#TODO)
+    end
+end

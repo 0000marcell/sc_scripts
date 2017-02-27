@@ -263,11 +263,33 @@ command "generate model" do
   option '--rel STRING', String, 'OO OM and MM:user'
   action do |args, options|
     options.default rel: 'OM'
-    @model_s = singularize(args[0])
-    @model_p = pluralize(@model_s)
-    @model_p_c = @model_p.capitalize
-    @model_s_c = @model_s.capitalize
-    @attr = args[1].split(':')[0]
+    if options.rel == 'MM'
+      model_a = args[0]
+      model_b = options.rel.split(':')[1]
+      if model_a < model_b 
+        @model_1_s = model_a
+        @model_2_s = model_b
+      else
+        @model_1_s = model_b
+        @model_2_s = model_a
+      end
+      @model_1_p   = pluralize(@model_1_s)
+      @model_1_p_c = @model_1_p.capitalize
+      @model_2_p   = pluralize(@model_2_s)
+      @rel = options.rel.split(':')[0]
+      run_cmd <<~HEREDOC
+        rails generate migration create_join_table_#{@model_1_p}_#{@model_2_p}
+      HEREDOC
+      template "#{TEMP}/join_model_migration.erb",
+        ""
+    else
+      @model_s = singularize(args[0])
+      @model_p = pluralize(@model_s)
+      @model_p_c = @model_p.capitalize
+      @model_s_c = @model_s.capitalize
+      @attr = args[1].split(':')[0]
+      @rel = options.rel
+    end
     puts "generating model #{@model_s}".colorize(:green)
     run_cmd "rails g model #{args.join(" ")}"
     run_cmd "rails g serializer #{args.join(" ")}"  
@@ -275,10 +297,10 @@ command "generate model" do
     write_after ":v1 do", "\t\tresources :#{@model_p}",
       "config/routes.rb"
     
-    template "#{TEMP}/controller_#{options.rel}_test.erb",
+    template "#{TEMP}/controller_#{@rel}_test.erb",
       "./test/controllers/api/v1/#{@model_p}_controller_test.rb",
       binding
-    template "#{TEMP}/controller_#{options.rel}.erb",
+    template "#{TEMP}/controller_#{@rel}.erb",
       "./app/controllers/api/v1/#{@model_p}_controller.rb",
       binding
     run_cmd "rails db:migrate"
