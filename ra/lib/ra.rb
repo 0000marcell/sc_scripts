@@ -51,6 +51,10 @@ command "generate login" do
     # configuring action cable
     copy "#{TEMP}/connection.rb",
       "app/channels/application_cable/connection.rb"
+    # creating action cable route
+    str = "\tmatch '/websocket/:token', to: ActionCable.server, via: [:get, :post]"
+    write_after "routes.draw", str,
+      "config/routes.rb"
 
     # creating user model
     user_args = 'name:string username:string email:string password_digest:string admin:boolean ' +
@@ -209,6 +213,11 @@ command "generate login" do
     puts "insert users routes".colorize(:green)
     write_after ":v1", "resources :users",
       "./config/routes.rb"
+
+    #copying seeds for the db
+    copy "#{TEMP}/seeds.rb",
+      "db/seeds.rb"
+
     #running migrations
     run_cmd "rails db:migrate"
   end
@@ -357,7 +366,6 @@ command "generate channel" do
     run_cmd "rails generate channel #{@channel}"
     template "#{TEMP}/channel.erb",
       "app/channels/#{@channel}_channel.rb", binding
-    
     puts "channel generated!".colorize(:magenta)
   end
 end

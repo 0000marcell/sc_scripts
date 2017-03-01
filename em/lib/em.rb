@@ -490,5 +490,7 @@ command "generate ws-component" do
   action do |args, options|
     @comp = args[0] 
     run_cmd "ember generate component #{@comp}"
+    copy "#{TEMP}/ws-comp.js",
+      "app/components/#{@comp}.js"
   end
 end

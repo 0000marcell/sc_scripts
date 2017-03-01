@@ -14,10 +14,9 @@ export default Ember.Component.extend({
 			.createConsumer(`ws://0.0.0.0:3000/websocket/${remember_token}`);
 		this.set('consumer', consumer);
 		var subscription = consumer.subscriptions
-      .create({channel: "MessagesChannel", token: '1'}, {
+      .create("MessagesChannel", {
 			received: (data) => {
-				this.get('messages').pushObject({image: data.image, 
-								username: data.username, body: data.body});
+        //handle the received data
 			}
 		});
 		this.set('subscription', subscription);
@@ -25,9 +24,9 @@ export default Ember.Component.extend({
   actions: {
     sendMessage(){
       this.get('subscription')
-        .perform('yeah_boiii', { foo: 'iiiiiiii'  });
+        .perform('#CALL A METHOD', { foo: 'iiiiiiii'  });
       this.get('subscription')
-			  .send({ name: 'marcell' });
+			  .send({ name: '#SEND DATA' });
     }
   }
 });
