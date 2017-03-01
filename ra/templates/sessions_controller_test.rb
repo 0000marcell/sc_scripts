@@ -20,7 +20,7 @@ class Api::V1::SessionsControllerTest < ActionDispatch::IntegrationTest
                                   password: '123456'} 
     assert_response 422
     response_json = JSON.parse(response.body)
-    assert_equal response_json['error_description'], 
+    assert_equal response_json['errors'], 
       "User isn't activated, please verify your email to activate the user!"
   end
 
@@ -29,7 +29,7 @@ class Api::V1::SessionsControllerTest < ActionDispatch::IntegrationTest
                                   password: 'wrong'} 
     assert_response 422
     response_json = JSON.parse(response.body)
-    assert_equal response_json['error_description'], 
+    assert_equal response_json['errors'], 
       "Wrong password!"
   end
 
@@ -38,7 +38,15 @@ class Api::V1::SessionsControllerTest < ActionDispatch::IntegrationTest
                                   password: '123456'} 
     assert_response 422
     response_json = JSON.parse(response.body)
-    assert_equal response_json['error_description'], 
+    assert_equal response_json['errors'], 
       "This user doesn't exist!"
+  end
+
+  test "change remember_token after login" do
+    post '/api/v1/login', params: {username: @user.email,
+                                  password: '123456'} 
+    assert_response :success
+    response_json = JSON.parse(response.body)
+    assert_equal User.find(1).remember_token, response_json['remember_token']
   end
 end

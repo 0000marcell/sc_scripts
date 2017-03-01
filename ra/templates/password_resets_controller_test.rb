@@ -9,9 +9,9 @@ class Api::V1::PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     post '/api/v1/password_resets', params: {user: {email: @user.email}}     
     assert_response :success
     response_json = JSON.parse(response.body)
-    assert_equal response_json['name'], @user.name 
-    assert_equal response_json['id'], @user.id
-    assert_equal response_json['email'], @user.email
+    assert_equal response_json['data']['attributes']['name'], @user.name 
+    assert_equal response_json['data']['id'].to_i, @user.id
+    assert_equal response_json['data']['attributes']['email'], @user.email
   end
 
   test "don't update password if the reset token is invalid" do

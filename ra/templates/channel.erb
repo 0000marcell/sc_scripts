@@ -1,0 +1,9 @@
+class <%= @channel.capitalize %>Channel < ApplicationCable::Channel
+  def subscribed
+    stream_from "<%= @channel %>"
+  end
+
+  def receive(data)
+    puts "received: #{data}" 
+  end
+end

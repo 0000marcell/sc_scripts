@@ -47,9 +47,14 @@ command "generate login" do
     run_cmd "rails g helper sessions"
     copy "#{TEMP}/sessions_helper.rb",
          "./app/helpers/sessions_helper.rb"
+    
+    # configuring action cable
+    copy "#{TEMP}/connection.rb",
+      "app/channels/application_cable/connection.rb"
+
     # creating user model
     user_args = 'name:string username:string email:string password_digest:string admin:boolean ' +
-      'activated:boolean activation_digest:string reset_digest:string remember_digest:string' + 
+      'activated:boolean activation_digest:string reset_digest:string remember_token:string ' + 
       'activated_at:datetime reset_sent_at:datetime'
     run_cmd "rails g model user #{user_args}"
     copy "#{TEMP}/user_model.rb",
@@ -343,11 +348,26 @@ command "destroy model" do
   end
 end
 
-command "testing" do
-  syntax 'testing'
-  description 'testing'
-  option '--rel STRING', String, 'OO OM and MM' 
+command "generate channel" do
+  syntax 'ra generate channel messages'
+  description 'ra generate channel messages'
   action do |args, options|
-    puts "#{options.rel}"   
+    @channel = pluralize(args[0])
+    puts "generating channel #{@channel}".colorize(:green)
+    run_cmd "rails generate channel #{@channel}"
+    template "#{TEMP}/channel.erb",
+      "app/channels/#{@channel}_channel.rb", binding
+    
+    puts "channel generated!".colorize(:magenta)
+  end
+end
+
+command "destroy channel" do
+  syntax 'ra destroy channel messages'
+  description 'ra destroy channel messages'
+  action do |args, options|
+    puts "destroying #{args[0]} channel".colorize(:green)
+    run_cmd "rails destroy channel #{args[0]}"
+    puts "channel #{args[0]} was destroyed!"
   end
 end

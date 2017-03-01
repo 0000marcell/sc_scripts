@@ -484,10 +484,11 @@ command "destroy crud-route" do
   end
 end
 
-command "testing" do
-  syntax 'testing'
-  description 'testing'
+command "generate ws-component" do
+  syntax 'ra generate ws-component chat-comp'
+  description 'generates a component with ws connections'
   action do |args, options|
-    puts camelize("this is just a test")
+    @comp = args[0] 
+    run_cmd "ember generate component #{@comp}"
   end
 end

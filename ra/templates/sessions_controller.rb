@@ -3,6 +3,7 @@ class Api::V1::SessionsController < ApplicationController
     user = User.find_by(email: params[:username].downcase)
 		if user && user.authenticate(params[:password]) &&
       user.activated?
+      user.remember
       token = Doorkeeper::AccessToken.create(
         resource_owner_id: user.id,
         application_id: '1',
@@ -11,6 +12,7 @@ class Api::V1::SessionsController < ApplicationController
       )
       json = {access_token: token.token, token_type: token.token_type, 
               expires_in: token.expires_in, created_at: token.created_at.to_i, 
+              remember_token: user.token,
               user: { id: user.id, email: user.email, name: user.name , username: user.username}
       }
       render json: json
@@ -24,7 +26,7 @@ class Api::V1::SessionsController < ApplicationController
       else
         msg = "Unknow error!"
       end
-      render json: {error_description: msg}, status: 422
+      render json: {errors: msg}, status: 422
     end
   end
 end

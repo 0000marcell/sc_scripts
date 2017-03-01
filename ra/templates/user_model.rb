@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
-	attr_accessor :remember_token, :activation_token, :reset_token
+  has_and_belongs_to_many :profiles
+  has_one :image
+  has_many :posts
+	attr_accessor :token, :activation_token, :reset_token
 	before_save :downcase_email
 	before_create :create_activation_digest
 	validates :name, presence: true, length: { maximum: 50 }
@@ -35,15 +38,15 @@ class User < ActiveRecord::Base
 	
 	# Remembers a user in the database for use in persistent sessions.
 	def remember
-		self.remember_token = User.new_token
-		update_attribute(:remember_digest, User.digest(remember_token))
+		self.token = User.new_token
+		update_attribute(:remember_token, token)
 	end
 
 	# Returns true if the given token matches the digest.
-	def authenticated?(remember_token)
-		return false if remember_digest.nil?
-		BCrypt::Password.new(remember_digest).is_password?(remember_token)
-	end
+	#def authenticated?(remember_token)
+		#return false if remember_digest.nil?
+		#BCrypt::Password.new(remember_digest).is_password?(remember_token)
+	#end
 
 	# Sets the password reset atributes 
 	def create_reset_digest
@@ -71,7 +74,7 @@ class User < ActiveRecord::Base
 	
 	# Forgets a user
 	def forget
-		update_attribute(:remember_digest, nil)
+		update_attribute(:remember_token, nil)
 	end
 
 	private 
