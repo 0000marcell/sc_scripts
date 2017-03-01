@@ -56,6 +56,11 @@ command "generate login" do
     write_after "routes.draw", str,
       "config/routes.rb"
 
+    # allowing all origins for actions cables
+    str = "config.action_cable.disable_request_forgery_protection = true"
+    write_after "application.configure", str, 
+      "config/environments/development.rb"
+
     # creating user model
     user_args = 'name:string username:string email:string password_digest:string admin:boolean ' +
       'activated:boolean activation_digest:string reset_digest:string remember_token:string ' + 
@@ -218,8 +223,14 @@ command "generate login" do
     copy "#{TEMP}/seeds.rb",
       "db/seeds.rb"
 
+    # copying cors configuration allowing any origin
+    copy "#{TEMP}/cors.rb",
+      "config/initializers/cors.rb"
+
     #running migrations
     run_cmd "rails db:migrate"
+    # seeding the db
+    run_cmd "rails db:seed"
   end
 end
 

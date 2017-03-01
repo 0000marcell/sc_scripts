@@ -2,17 +2,16 @@ class Api::V1::UsersController < ApplicationController
   before_action :doorkeeper_authorize!, only: [:index, :show, :edit, :destroy, :update]
 
 	def index
-		@users = User.all
-		render json: @users
+    if params[:username]
+      @data = User.find_by(username: params[:username])
+    else
+		  @data = User.all
+    end
+		render json: @data
 	end
 
 	def show
-		# work around for ember data
-		if(params[:id].to_i != 0)
-			@user = User.find(params[:id])
-		else
-			@user = User.find_by_username(params[:id])
-		end	
+		@user = User.find(params[:id])
 		render json: @user
 	end
 
