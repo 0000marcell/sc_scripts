@@ -19,6 +19,7 @@ class Api::V1::UserMailer < ApplicationMailer
   #
   def password_reset(user)
 		@user = user
+    @url = user.reset_url
 		mail to: user.email, subject: "Password reset"
   end
 end

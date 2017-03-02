@@ -68,6 +68,8 @@ command "generate login" do
     run_cmd "rails g model user #{user_args}"
     copy "#{TEMP}/user_model.rb",
          "./app/models/user.rb"
+    copy "#{TEMP}/user_test.rb",
+      "./test/models/user_test.rb"
 
     copy "#{TEMP}/users.yml",
          "./test/fixtures/users.yml"

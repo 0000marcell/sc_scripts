@@ -4,4 +4,5 @@
     label='email' type="text" value=user.email validate=true}}
 	{{input id="test-login-password" label='password' 
     type="password" value=user.password validate=true}}
+  {{#link-to 'home.password-reset' }}Forgot password?{{/link-to}}
 {{/abstract-form}}

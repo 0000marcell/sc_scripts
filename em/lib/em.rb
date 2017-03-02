@@ -47,6 +47,8 @@ command "generate login" do
     puts 'generating routes'
     run_cmd "ember g route home/login"
     run_cmd "ember g route home/signup"
+    run_cmd "ember g route home/password-reset"
+    run_cmd "ember g route password-reset --path ':email/:token'"
     run_cmd "ember g route users"
     run_cmd "ember g route users/user --path ':user_username'"
     run_cmd "ember g route index"
@@ -65,12 +67,25 @@ command "generate login" do
          "./app/templates/home/signup.hbs"
     copy "#{TEMP}/index.js",
          "./app/routes/index.js"
+    copy "#{TEMP}/home-password-reset.js",
+      "./app/routes/home/password-reset.js"
+    copy "#{TEMP}/home-password-reset.hbs",
+      "./app/templates/home/password-reset.hbs"
+    copy "#{TEMP}/password-reset.js",
+      "./app/routes/password-reset.js"
+    copy "#{TEMP}/password-reset.hbs",
+      "./app/templates/password-reset.hbs"
     #Components
     puts 'generating components'
     run_cmd "ember g component abstract-form"
     run_cmd "ember g component session-component"
     run_cmd "ember g component login-form"
     run_cmd "ember g acceptance-test login"
+    run_cmd "ember g component password-reset-form"
+    run_cmd "ember g acceptance-test password-reset-form"
+    run_cmd "ember g component password-change-form"
+    run_cmd "ember g acceptance-test password-change-form"
+
     puts "copying components"
     copy "#{TEMP}/abstract-form.js",
          "./app/components/abstract-form.js"
@@ -86,6 +101,16 @@ command "generate login" do
          "./tests/acceptance/login-test.js", binding
     copy "#{TEMP}/login-form.js",
          "./app/components/login-form.js"
+    template "#{TEMP}/password-reset-form.erb",
+             "./app/components/password-reset-form.js",
+             binding
+    copy "#{TEMP}/password-reset-form.hbs",
+      "./app/templates/components/password-reset-form.hbs"
+    template "#{TEMP}/password-change-form.erb",
+             "./app/components/password-change-form.js",
+             binding
+    copy "#{TEMP}/password-change-form.hbs",
+      "./app/templates/components/password-change-form.hbs"
     #Model
     puts 'generating models'
     run_cmd "ember g model user name:string email:string username:string password:string"
@@ -153,9 +178,11 @@ command "destroy login" do
     puts 'destroying routes'
     run_cmd "ember d route home/login"
     run_cmd "ember d route home/signup"
+    run_cmd "ember d route home/password-reset"
     run_cmd "ember d route users"
     run_cmd "ember d route users/user"
     run_cmd "ember d route index"
+    run_cmd "ember d route password-reset"
 
     #Serializers
     rm_dir './app/serializers'
@@ -166,6 +193,10 @@ command "destroy login" do
     run_cmd "ember d component session-component"
     run_cmd "ember d component login-form"
     run_cmd "ember d acceptance-test login"
+    run_cmd "ember d component password-reset-form"
+    run_cmd "ember d acceptance-test password-reset-form"
+    run_cmd "ember d component password-change-form"
+    run_cmd "ember d acceptance-test password-change-form"
 
     #Model
     puts 'destroying models'

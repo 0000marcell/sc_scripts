@@ -1,8 +1,4 @@
-model 
-migration
-model test
-model fixture
-insert resources in the route #api/v1
-serializer
-controller                    #api/v1
-controller test               #api/v1
+models/user
+password_reset_controller
+user_mailer
+tests/models/user_test.rb

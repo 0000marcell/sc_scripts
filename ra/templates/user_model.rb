@@ -2,7 +2,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :profiles
   has_one :image
   has_many :posts
-	attr_accessor :token, :activation_token, :reset_token
+	attr_accessor :token, :activation_token, :reset_token,
+    :reset_url
 	before_save :downcase_email
 	before_create :create_activation_digest
 	validates :name, presence: true, length: { maximum: 50 }
@@ -54,6 +55,10 @@ class User < ActiveRecord::Base
 		update_attribute(:reset_digest,  User.digest(reset_token))
 		update_attribute(:reset_sent_at, Time.zone.now)
 	end
+
+  def create_reset_url(url)
+    self.reset_url = "#{url}/#{email}/#{reset_token}" 
+  end
 
 	#Returns true if a password reset has expired
 	def password_reset_expired?
