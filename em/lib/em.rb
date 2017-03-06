@@ -364,7 +364,25 @@ command "generate model" do
       write_after "this.namespace", "\t// --#{model_name}",
             "./mirage/config.js"
     end
-    puts "if the model have MM relationships, you need to point to the join model on mirage!"
+    puts <<~HEREDOC
+      OM:
+        you need to change the owner ember and mirage
+        and create the relation on default.js e.g
+        user.taks = tasks;
+        user.save();
+      OO:
+        you need to change the owner ember and mirage
+        and create the relation on default.js e.g 
+        user.task = task;
+        task.user = user;
+        user.save();
+        task.save();
+      MM:
+        you need to change the owner
+        you need to point to the join model in mirage!,
+        you also need to create the join model, and make the relationships on default.js 
+        e.g server.create('user-tag', {userId: 1, tagId: 1});
+    HEREDOC
   end
 end
 

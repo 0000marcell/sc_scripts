@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
-  has_and_belongs_to_many :profiles
-  has_one :image
-  has_many :posts
+  #has_and_belongs_to_many :profiles
+  #has_one :image
+  #has_many :posts
 	attr_accessor :token, :activation_token, :reset_token,
     :reset_url
 	before_save :downcase_email

@@ -283,9 +283,10 @@ end
 command "generate model" do
   syntax 'ra generate model name:string user:references --rel OM'
   description  <<~HEREDOC
-    e.g ra generate model name:string user:belongs-to --rel OM
+    e.g ra generate model tag name:string user:references --rel OM
     you dont need to use api/v1, it will be infered
     rel defaults to OM
+    for MM relationships ra generate model tag name:string user:references --rel MM:user
   HEREDOC
   option '--rel STRING', String, 'OO OM and MM:user'
   action do |args, options|

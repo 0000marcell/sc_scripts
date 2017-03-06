@@ -1,0 +1,2 @@
+after creating a OM model we need to make the relationships in the user model and user/mirage 
+model after this we only need to create the values in default.js file on mirage
