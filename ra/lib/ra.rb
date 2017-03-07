@@ -192,7 +192,11 @@ command "generate login" do
       "./app/controllers/application_controller.rb"
       str = <<~HEREDOC
         \t\tdef doorkeeper_unauthorized_render_options(error: nil)
-          \t\t{ json: { error: "Not authorized!" } }	
+          \t\t\t{ json: { error: "Not authorized!" } }	
+        \t\tend
+
+        \t\tdef current_resource_owner
+          \t\t\tUser.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
         \t\tend
       HEREDOC
     else
@@ -201,6 +205,10 @@ command "generate login" do
         \t\tdef doorkeeper_unauthorized_render_options(error: nil)
           \t\t\t{ json: { error: "Not authorized!" } }	
         \t\tend
+
+        \t\tdef current_resource_owner
+          \t\t\tUser.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        \t\tend
       HEREDOC
     end
     write_after "Application", str,
@@ -208,7 +216,7 @@ command "generate login" do
 
     # creating users controller 
     puts "Creating users controller".colorize(:gren)
-    run_cmd "rails g controller api/v1/user"
+    run_cmd "rails g controller api/v1/users"
     # copying users controller
     copy "#{TEMP}/users_controller.rb",
       "app/controllers/api/v1/users_controller.rb"

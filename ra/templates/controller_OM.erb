@@ -49,6 +49,7 @@ class Api::V1::<%= @model_p_c %>Controller < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def api_v1_<%= @model_s %>_params
       # e.g ... .permit(:name, :user_id)
+      params.require(:data).require(:attributes).permit(:name, :relationships)
 			params.require(:<%= @model_s %>).permit(#TODO)
     end
 end
