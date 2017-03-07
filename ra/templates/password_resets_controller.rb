@@ -7,7 +7,7 @@ class Api::V1::PasswordResetsController < ApplicationController
 	  @user = User.find_by(email: params[:user][:email].downcase)
 		if @user
 			@user.create_reset_digest
-      @user.create_reset_url(params[:url])
+      @user.create_reset_url("#{request.headers['origin']}/password-reset")
 			@user.send_password_reset_email
 			render json: @user
 		else

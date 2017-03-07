@@ -13,7 +13,6 @@ module.exports = function(environment) {
 			enabled: false
 		},
 		APP: {
-      domain: '/',
 			useMirage: false,
 			host: '/',
 			oauth2: '/api/v1/login'
@@ -22,14 +21,12 @@ module.exports = function(environment) {
 
   if (environment === 'development') {
 		/* mirage backend */
-    ENV.APP.domain = 'http://0.0.0.0:4200';
 		ENV.APP.useMirage = true;
 		ENV.APP.host = '/';
 		ENV.APP.oauth2 = '/api/v1/login';
 		ENV['ember-cli-mirage'].enabled = true;
 
 		/* rails backend
-    ENV.APP.domain = 'http://0.0.0.0:4200';
 		ENV.APP.useMirage = false;
 		ENV.APP.host = 'http://0.0.0.0:3000';
 		ENV.APP.oauth2 = 'http://0.0.0.0:3000/api/v1/login';
@@ -47,7 +44,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
-    ENV.APP.domain = 'http://0.0.0.0:4200';
 		ENV.APP.useMirage = true;
 		ENV.APP.host = '/';
 		ENV.APP.oauth2 = '/api/v1/login';

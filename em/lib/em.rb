@@ -48,7 +48,7 @@ command "generate login" do
     run_cmd "ember g route home/login"
     run_cmd "ember g route home/signup"
     run_cmd "ember g route home/password-reset"
-    run_cmd "ember g route password-reset --path ':email/:token'"
+    run_cmd "ember g route password-reset --path 'password-reset/:email/:token'"
     run_cmd "ember g route users"
     run_cmd "ember g route users/user --path ':user_username'"
     run_cmd "ember g route index"
