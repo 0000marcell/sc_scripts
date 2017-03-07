@@ -9,6 +9,7 @@ class Api::V1::UserMailer < ApplicationMailer
 	
   def account_activation(user)
 		@user = user
+    @url = user.activation_url
 		mail to: user.email, subject: "Account activation"
   end
 

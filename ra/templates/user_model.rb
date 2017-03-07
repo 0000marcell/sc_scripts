@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   #has_one :image
   #has_many :posts
 	attr_accessor :token, :activation_token, :reset_token,
-    :reset_url
+    :reset_url, :activation_url
 	before_save :downcase_email
 	before_create :create_activation_digest
 	validates :name, presence: true, length: { maximum: 50 }
@@ -25,6 +25,11 @@ class User < ActiveRecord::Base
 	def send_activation_email
 		Api::V1::UserMailer.account_activation(self).deliver_now
 	end
+
+  # Create activation url
+  def create_activation_url(url)
+    self.activation_url = "#{url}/#{email}/#{activation_token}"
+  end
 
 	def User.digest(string)
 		cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :

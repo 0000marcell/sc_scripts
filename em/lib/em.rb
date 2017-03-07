@@ -207,6 +207,14 @@ command "destroy login" do
     run_cmd "ember d acceptance-test password-reset-form"
     run_cmd "ember d component password-change-form"
     run_cmd "ember d acceptance-test password-change-form"
+    run_cmd "ember g component signup-form"
+    run_cmd "ember g acceptance-test signup-form"
+
+    # copy signup form
+    copy "#{TEMP}/signup-form.js",
+      "./app/components/signup-form.js"
+    copy "#{TEMP}/signup-form.hbs",
+      "./app/templates/components/signup-form.hbs"
 
     #Model
     puts 'destroying models'

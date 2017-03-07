@@ -1,14 +1,4 @@
-{{#abstract-form model=model text='Sign Up' submit=(route-action 'signup')}}
-	<h5>Signup</h5>
-	{{input placeholder='name' type="text" value=model.name validate=true}}
-	{{input placeholder='email' type="text" value=model.email validate=true}}
-	{{input placeholder='User name' 
-		type="text" value=model.username validate=true}}
-	{{input placeholder='Password' 
-				type="password" value=model.password validate=true}}
-	{{input placeholder='Password Confirmation' 
-		type="password" value=model.passwordConfirmation validate=true}}
-{{/abstract-form}}
+{{signup-form}}
 <br>
 {{#link-to 'home.login' }}Go to login{{/link-to}}
 

@@ -22,6 +22,7 @@ class Api::V1::UsersController < ApplicationController
 	def create
 		@user = User.new(user_params) 
 		if @user.save
+      @user.create_activation_url("#{request.headers['origin']}/account-activation")
 			@user.send_activation_email
 			render json: @user 		
 		else
@@ -50,9 +51,11 @@ class Api::V1::UsersController < ApplicationController
 	private
 
 		def user_params
-			params.permit(:name, :username, :email, 
-																	 :password, 
-																	 :password_confirmation)
+      params.require(:data).require(:attributes).permit(:name, 
+         :username,
+         :email,
+         :password,
+         :password_confirmation)
 		end
 
     def update_params

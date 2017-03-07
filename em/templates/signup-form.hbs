@@ -1,0 +1,22 @@
+<h3>Signup</h3>
+{{#abstract-form text='Submit' submit=(action "submit")}}
+	{{input id='test-name-form' 
+  		value=model.name
+  		type="text" placeholder="name"}}
+
+	{{input id='test-email-form' 
+  		value=model.email
+  		type="text" placeholder="email"}}
+
+	{{input id='test-username-form' 
+  		value=model.username
+  		type="text" placeholder="username"}}
+
+	{{input id='test-password-form' 
+  		value=model.password
+  		type="text" placeholder="password"}}
+
+	{{input id='test-passwordConfirmation-form' 
+  		value=model.passwordConfirmation
+  		type="text" placeholder="passwordConfirmation"}}
+{{/abstract-form}}
