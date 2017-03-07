@@ -49,6 +49,7 @@ command "generate login" do
     run_cmd "ember g route home/signup"
     run_cmd "ember g route home/password-reset"
     run_cmd "ember g route password-reset --path 'password-reset/:email/:token'"
+    run_cmd "ember g route account-activation --path 'account-activation/:email/:token'"
     run_cmd "ember g route users"
     run_cmd "ember g route users/user --path ':user_username'"
     run_cmd "ember g route index"
@@ -75,6 +76,10 @@ command "generate login" do
       "./app/routes/password-reset.js"
     copy "#{TEMP}/password-reset.hbs",
       "./app/templates/password-reset.hbs"
+    copy "#{TEMP}/account-activation-route.js",
+      "./app/routes/account-activation.js"
+    copy "#{TEMP}/account-activation-route.hbs",
+      "./app/templates/account-activation.hbs"
     #Components
     puts 'generating components'
     run_cmd "ember g component abstract-form"
@@ -84,6 +89,7 @@ command "generate login" do
     run_cmd "ember g component password-reset-form"
     run_cmd "ember g acceptance-test password-reset-form"
     run_cmd "ember g component password-change-form"
+    run_cmd "ember g component account-activation"
     run_cmd "ember g acceptance-test password-change-form"
 
     puts "copying components"
@@ -111,6 +117,10 @@ command "generate login" do
              binding
     copy "#{TEMP}/password-change-form.hbs",
       "./app/templates/components/password-change-form.hbs"
+    copy "#{TEMP}/account-activation-component.js",
+      "./app/components/account-activation.js"
+    copy "#{TEMP}/account-activation-component.hbs",
+      "./app/templates/components/account-activation.hbs"
     #Model
     puts 'generating models'
     run_cmd "ember g model user name:string email:string username:string password:string"
