@@ -513,22 +513,26 @@ command "info" do
 end
 
 command "generate crud-route" do
-  syntax 'e.g em generate crud-route users/user todo'
-  description 'e.g generate crud-route users/user todo'
+  syntax 'e.g em generate crud-route users/user(optional) todo'
+  description 'e.g generate crud-route users/user(optional) todo'
   action do |args, options|
     puts "creating crud routes #{args[0]} #{args[1]}".colorize(:green)
-    prefix   = args[0]
-    model_p  = pluralize(args[1])
-    @model_s  = singularize(args[1]) 
-    run_cmd "ember g route #{prefix}/#{model_p}" 
-    run_cmd "ember g route #{prefix}/#{model_p}/new"
-    run_cmd "ember g route #{prefix}/#{model_p}/index"
-    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s} --path :id"
-    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s}/index"
-    run_cmd "ember g route #{prefix}/#{model_p}/#{@model_s}/edit"
+    if args[1]
+      path = "#{args[0]}/#{pluralize(args[1])}"
+      @model_s = singularize(args[1])
+    else
+      path = pluralize(args[0])
+      @model_s = singularize(args[0])
+    end
+    run_cmd "ember g route #{path}" 
+    run_cmd "ember g route #{path}/new"
+    run_cmd "ember g route #{path}/index"
+    run_cmd "ember g route #{path}/#{@model_s} --path :id"
+    run_cmd "ember g route #{path}/#{@model_s}/index"
+    run_cmd "ember g route #{path}/#{@model_s}/edit"
     puts "copying index route".colorize(:green)
     template "#{TEMP}/crud-route-index.erb",
-      "./app/routes/#{prefix}/#{model_p}/#{@model_s}.js", binding
+      "./app/routes/#{path}/#{@model_s}.js", binding
     puts "routes generated!".colorize(:green)
   end
 end
