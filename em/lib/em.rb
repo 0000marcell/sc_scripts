@@ -542,16 +542,20 @@ command "destroy crud-route" do
   description 'e.g em destroy crud-route users/user todo'
   action do |args, options|
     puts "destroying crud routes #{args[0]} #{args[1]}".colorize(:green)
-    prefix  = args[0]
-    model_p = pluralize(args[1])
-    model_s = singularize(args[1])
-    run_cmd "ember d route #{prefix}/#{model_p}"
-    run_cmd "ember d route #{prefix}/#{model_p}/new"
-    run_cmd "ember d route #{prefix}/#{model_p}/index"
-    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}"
-    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}/index"
-    run_cmd "ember d route #{prefix}/#{model_p}/#{model_s}/edit"
-    puts "route #{prefix}/#{model_s} removed".colorize(:green)
+    if args[1]
+      path = "#{args[0]}/#{pluralize(args[1])}"
+      model_s = singularize(args[1])
+    else
+      path = pluralize(args[0])
+      model_s = singularize(args[0])
+    end
+    run_cmd "ember d route #{path}" 
+    run_cmd "ember d route #{path}/new"
+    run_cmd "ember d route #{path}/index"
+    run_cmd "ember d route #{path}/#{model_s} --path :id"
+    run_cmd "ember d route #{path}/#{model_s}/index"
+    run_cmd "ember d route #{path}/#{model_s}/edit"
+    puts "routes destroyed!".colorize(:green)
   end
 end
 
