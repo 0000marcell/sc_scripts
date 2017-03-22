@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift "/Users/marcell/Documents/github/sc_scripts/pa/lib"
+$LOAD_PATH.unshift "/Users/marcell/Documents/github/sc_scripts/pa/helpers"
+require 'rubygems'
+require 'simple_commander/import'
+require 'simple_commander/import'
+require 'io_helper'
+require 'http_helper'
+require 'crypt_helper'
+
+
+require 'pa'

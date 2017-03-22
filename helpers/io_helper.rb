@@ -24,6 +24,7 @@ require 'erb'
 # command_exist?
 # subcommand_exist?
 # have_subcommands?
+# read
 
 module IO_helper
   def run_cmd(command)
@@ -236,4 +237,10 @@ module IO_helper
 		in_file? /register/, 
 			"#{path}/#{cli}/subcommands/#{command}.rb"	
 	end
+
+  def read(path)
+    content = ""
+    File.open(path, 'r'){|f| content = f.read }
+    content
+  end
 end
